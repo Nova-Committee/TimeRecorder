@@ -1,7 +1,7 @@
 package top.infsky.mcstats;
 
 import cn.evole.onebot.sdk.util.FileUtils;
-import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.PacketEvents;  // ?
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -36,8 +36,6 @@ public class McStats implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(this::onServerStopped);
 
-        ServerTickEvents.END_SERVER_TICK.register(statsData::update);
-
     }
 
     public void init() {
@@ -62,6 +60,7 @@ public class McStats implements ModInitializer {
             PacketEvents.getAPI().getEventManager().registerListener(new MixinPacket());
             PacketEvents.getAPI().init();
         }
+        ServerTickEvents.END_SERVER_TICK.register(statsData::update);
     }
 
     public void onServerStopping(MinecraftServer server) {

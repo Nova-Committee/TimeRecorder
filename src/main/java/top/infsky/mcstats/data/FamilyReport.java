@@ -1,7 +1,5 @@
 package top.infsky.mcstats.data;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.val;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +20,7 @@ public class FamilyReport {
                 """,
                 onlineMap.keySet().size(),
                 longestOnlinePlayer.get(0),
-                (int) longestOnlinePlayer.get(1) / 1200,
+                (Long) longestOnlinePlayer.get(1) / 1200,
                 getMostActivePlayer(dataMap)
         );
     }
@@ -57,7 +55,7 @@ public class FamilyReport {
             }
         }
 
-        if (player != null) return List.of(player.getName().toString(), maxTime);
+        if (player != null) return List.of(player.getName().getString(), maxTime);
         return List.of("无", 0L);
     }
 

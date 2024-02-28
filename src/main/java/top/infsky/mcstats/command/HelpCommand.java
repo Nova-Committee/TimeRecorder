@@ -1,13 +1,11 @@
 package top.infsky.mcstats.command;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import top.infsky.mcstats.McStats;
 
 public class HelpCommand {
-    public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static int execute(CommandContext<CommandSourceStack> context) {
         String helpMsg = """
                 §r§k§bMcStats 帮助信息
                 §r/mcstats help §f- §7显示此帮助信息
@@ -16,7 +14,7 @@ public class HelpCommand {
                 §r/mcstats reportAll §f- §7显示当日截止目前的所有玩家的统计信息
                 §r/mcstats connect §f- §7连接到QQ机器人
                 """;
-        context.getSource().sendSuccess(() -> Component.literal(McStats.getStatsData().getReport()), true);
+        context.getSource().sendSuccess(() -> Component.literal(helpMsg), true);
         return 1;
     }
 }

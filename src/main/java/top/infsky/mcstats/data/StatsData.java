@@ -11,12 +11,15 @@ import top.infsky.mcstats.config.ModConfig;
 import top.infsky.mcstats.log.LogUtils;
 import top.infsky.mcstats.mcbot.McBot;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 
 @Getter
 public class StatsData {
-    private boolean Reported;  // 当天已经report过了
+    private boolean Reported = false;  // 当天已经report过了
+
+    private LocalDate NextDay;  // 明天
 
     private static LocalTime REPORT_TIME; // 数据报告时间
 
@@ -27,6 +30,9 @@ public class StatsData {
     public StatsData() {
         val time = ModConfig.INSTANCE.getCommon().getTime().split(":");  // 00:00:00 24-hour
         REPORT_TIME = LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
+
+        if (LocalTime.now().isAfter(REPORT_TIME)) Reported = true;
+        NextDay = LocalDate.now().plusDays(1);
         reset();
     }
 
@@ -52,9 +58,11 @@ public class StatsData {
         }
 
         if (isReported()) {
-            if (LocalTime.now().isAfter(LocalTime.MIN)) Reported = false;
+            if (LocalDate.now().isAfter(NextDay)) Reported = false;
         } else {
             if (LocalTime.now().isAfter(REPORT_TIME)) {
+                NextDay = LocalDate.now().plusDays(1);
+                Reported = true;
                 report();
                 reset();
             }

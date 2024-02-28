@@ -29,9 +29,9 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation "cn.evole.bot:OneBot-Client:${project.onebot_version}"
-    compileOnly 'com.github.retrooper.packetevents:netty-common:2.2.1'
-    implementation "cn.evole.config:AtomConfig-Toml:${project.toml_version}"
+    implementation include ('com.github.retrooper.packetevents:netty-common:2.2.1'){transitive = true}
+    implementation include ("cn.evole.bot:OneBot-Client:${project.onebot_version}"){transitive = false}
+    implementation include ("cn.evole.config:AtomConfig-Toml:${project.toml_version}"){transitive = false}
     compileOnly ("org.projectlombok:lombok:1.18.24")
     modCompileOnly ("maven.modrinth:vanish:1.5.2-1.20.1")
     annotationProcessor ("org.projectlombok:lombok:1.18.24")
