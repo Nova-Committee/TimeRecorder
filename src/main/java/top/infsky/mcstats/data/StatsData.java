@@ -58,7 +58,7 @@ public class StatsData {
         }
 
         if (isReported()) {
-            if (LocalDate.now().isAfter(NextDay)) Reported = false;
+            if (LocalDate.now().isEqual(NextDay)) Reported = false;
         } else {
             if (LocalTime.now().isAfter(REPORT_TIME)) {
                 NextDay = LocalDate.now().plusDays(1);
@@ -94,7 +94,7 @@ public class StatsData {
     public String getFullReport() {
         StringBuilder result = new StringBuilder();
         for (PlayerData playerData : dataMap.values()) {
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer()))).append("\n\n");
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer())));
         }
         return result.toString();
     }
