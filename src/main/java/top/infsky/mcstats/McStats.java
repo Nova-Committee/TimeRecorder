@@ -4,10 +4,12 @@ import cn.evole.onebot.sdk.util.FileUtils;
 import com.github.retrooper.packetevents.PacketEvents;
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
+import top.infsky.mcstats.command.ICmdEvent;
 import top.infsky.mcstats.config.ModConfig;
 import top.infsky.mcstats.data.StatsData;
 import top.infsky.mcstats.mcbot.McBot;
@@ -26,6 +28,8 @@ public class McStats implements ModInitializer {
     @Override
     public void onInitialize() {
         init();
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ICmdEvent.register(dispatcher));
 
         ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
         ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);

@@ -22,8 +22,22 @@ public class FamilyReport {
                 """,
                 onlineMap.keySet().size(),
                 longestOnlinePlayer.get(0),
-                longestOnlinePlayer.get(1),
+                (int) longestOnlinePlayer.get(1) / 1200,
                 getMostActivePlayer(dataMap)
+        );
+    }
+
+    public static String getString(PlayerData data, boolean online) {
+        return String.format(
+                """
+                玩家：%s  %s
+                上线时长：%s分钟
+                活跃度：%s
+                """,
+                data.getPlayer().getName().getString(),
+                online ? "在线" : "离线",
+                data.getPlayTime() / 1200,
+                data.getPacketsCount()
         );
     }
 

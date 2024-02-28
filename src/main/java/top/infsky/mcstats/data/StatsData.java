@@ -79,6 +79,18 @@ public class StatsData {
         McStats.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal(result), false);
     }
 
+    public String getReport() {
+        return FamilyReport.getString(onlineMap, dataMap);
+    }
+
+    public String getFullReport() {
+        StringBuilder result = new StringBuilder();
+        for (PlayerData playerData : dataMap.values()) {
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer()))).append("\n\n");
+        }
+        return result.toString();
+    }
+
     public void reset() {
         LogUtils.LOGGER.info("重置统计信息...");
         dataMap = new HashMap<>();
