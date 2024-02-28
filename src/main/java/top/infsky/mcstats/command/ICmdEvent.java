@@ -8,7 +8,7 @@ import static net.minecraft.commands.Commands.*;
 public class ICmdEvent {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("mcstats")
-//                .executes(HelpCommand::execute)
+                .executes(HelpCommand::execute)
                     .then(literal("help")
                         .executes(HelpCommand::execute))
                     .then(literal("connect")
