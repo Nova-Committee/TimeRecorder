@@ -12,7 +12,6 @@ base {
 
 repositories {
     maven { url = "https://maven.nova-committee.cn/releases" }
-    maven { url 'https://repo.codemc.io/repository/maven-releases/' } // PacketEvents
     maven { url =  "https://api.modrinth.com/maven" }
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
@@ -29,7 +28,6 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation include ('com.github.retrooper.packetevents:netty-common:2.2.1'){transitive = true}
     implementation include ("cn.evole.bot:OneBot-Client:${project.onebot_version}"){transitive = false}
     implementation include ("cn.evole.config:AtomConfig-Toml:${project.toml_version}"){transitive = false}
     compileOnly ("org.projectlombok:lombok:1.18.24")

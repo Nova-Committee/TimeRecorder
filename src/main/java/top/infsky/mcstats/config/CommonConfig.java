@@ -21,8 +21,6 @@ public class CommonConfig extends AutoLoadTomlConfig {
 
     @TableField(rightComment = "统计数据输出时间(24小时制)")
     private String time = "00:00:00";
-    @TableField(rightComment = "是否开启活跃度统计功能(会降低性能)")
-    private boolean activeStats = true;
 
     @TableField(rightComment = "开启Q群功能")
     private boolean groupOn = true;

@@ -69,15 +69,6 @@ public class StatsData {
         }
     }
 
-    public void packetReceived(Player player) {
-        if (VanishAPI.isVanished(player)) return;  // Vanish 支持
-        if (!onlineMap.containsKey(player)) {
-            throw new RuntimeException(String.format("收到玩家 %s 的数据包，但是该玩家不存在！", player.getName().getString()));
-        }
-
-        dataMap.get(player).packetAdd();
-    }
-
     public void report() {
         LogUtils.LOGGER.info("输出统计信息...");
         String result = FamilyReport.getString(onlineMap, dataMap);
@@ -94,7 +85,7 @@ public class StatsData {
     public String getFullReport() {
         StringBuilder result = new StringBuilder();
         for (PlayerData playerData : dataMap.values()) {
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer())));
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer()))).append('\n');
         }
         return result.toString();
     }

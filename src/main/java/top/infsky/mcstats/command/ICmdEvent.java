@@ -13,15 +13,15 @@ public class ICmdEvent {
                         .executes(HelpCommand::execute))
                     .then(literal("connect")  // 连接QQ机器人
                         .requires(source -> source.hasPermission(2))
-                            .executes(ConnectCommand::execute)
+                            .executes(ConnectCommand::execute))
                     .then(literal("report")  // 对自己显示当日截止目前的统计信息
                         .executes(ReportCommand::execute))
                     .then(literal("reportall")  // 对自己显示当日截止目前的所有玩家的统计信息
                         .requires(source -> source.hasPermission(2))
-                            .executes(ReportAllCommand::execute)
+                            .executes(ReportAllCommand::execute))
                     .then(literal("reportqq")  // 对所有人显示和发送当日截止目前的统计信息到QQ
                         .requires(source -> source.hasPermission(2))
-                            .executes(ReportQQCommand::execute)
-        ))));
+                            .executes(ReportQQCommand::execute))
+        );
     }
 }
