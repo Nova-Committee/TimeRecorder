@@ -14,6 +14,7 @@ import top.infsky.mcstats.mcbot.McBot;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Getter
 public class StatsData {
@@ -23,9 +24,9 @@ public class StatsData {
 
     private static LocalTime REPORT_TIME; // 数据报告时间
 
-    public HashMap<Player, PlayerData> dataMap;  // 玩家统计信息
+    public HashMap<UUID, PlayerData> dataMap;  // 玩家统计信息
 
-    public HashMap<Player, Boolean> onlineMap;  // 实时上线列表
+    public HashMap<UUID, Boolean> onlineMap;  // 实时上线列表
 
     public StatsData() {
         val time = ModConfig.INSTANCE.getCommon().getTime().split(":");  // 00:00:00 24-hour
@@ -41,19 +42,19 @@ public class StatsData {
      * @param server 传null也不是不行
      */
     public void update(MinecraftServer server) {
-        onlineMap.forEach((Player player, Boolean online) -> onlineMap.replace(player, false));
+        onlineMap.forEach((UUID player, Boolean online) -> onlineMap.replace(player, false));
 
         // 遍历所有在线玩家
         for (Player player : McStats.getSERVER().getPlayerList().getPlayers()) {
             if (!VanishAPI.isVanished(player)) {  // Vanish 支持
-                if (!onlineMap.containsKey(player)) {
+                if (!onlineMap.containsKey(player.getUUID())) {
                     // 添加不被包含在统计信息中的玩家
-                    onlineMap.put(player, true);
-                    dataMap.put(player, new PlayerData(player));
+                    onlineMap.put(player.getUUID(), true);
+                    dataMap.put(player.getUUID(), new PlayerData(player));
                 }
                 // 更新统计信息
-                onlineMap.replace(player, true);
-                dataMap.get(player).timeAdd();
+                onlineMap.replace(player.getUUID(), true);
+                dataMap.get(player.getUUID()).timeAdd();
             }
         }
 
@@ -85,7 +86,7 @@ public class StatsData {
     public String getFullReport() {
         StringBuilder result = new StringBuilder();
         for (PlayerData playerData : dataMap.values()) {
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer()))).append('\n');
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()))).append('\n');
         }
         return result.toString();
     }

@@ -6,9 +6,10 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class FamilyReport {
-    public static String getString(Map<Player, Boolean> onlineMap, Map<Player, PlayerData> dataMap) {
+    public static String getString(Map<UUID, Boolean> onlineMap, Map<UUID, PlayerData> dataMap) {
         val longestOnlinePlayer = getLongestOnlinePlayer(dataMap);
         return String.format(
                 """
@@ -35,12 +36,12 @@ public class FamilyReport {
         );
     }
 
-    public static JsonObject getJson(Map<Player, Boolean> onlineMap, Map<Player, PlayerData> dataMap) {
+    public static JsonObject getJson(Map<UUID, Boolean> onlineMap, Map<UUID, PlayerData> dataMap) {
         // TODO 写不了一点
         return null;
     }
 
-    public static List<Object> getLongestOnlinePlayer(Map<Player, PlayerData> dataMap) {
+    public static List<Object> getLongestOnlinePlayer(Map<UUID, PlayerData> dataMap) {
         Player player = null;
         long maxTime = 0;
 
