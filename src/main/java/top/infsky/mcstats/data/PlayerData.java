@@ -8,11 +8,14 @@ import top.infsky.mcstats.log.LogUtils;
 public class PlayerData {
     public Player player;  // 玩家
 
+    public boolean fakePlayer;
+
     public long playTime;  // 当天游玩tick数
 
-    public PlayerData(Player gamePlayer) {
-        LogUtils.LOGGER.info(String.format("初始化玩家数据: %s", gamePlayer.getName().getString()));
+    public PlayerData(Player gamePlayer, boolean isFakePlayer) {
+        LogUtils.LOGGER.debug(String.format("初始化玩家数据: %s", gamePlayer.getName().getString()));
         player = gamePlayer;
+        fakePlayer = isFakePlayer;
         playTime = 0;
     }
 

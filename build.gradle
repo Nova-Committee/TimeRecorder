@@ -32,6 +32,7 @@ dependencies {
     implementation include ("cn.evole.config:AtomConfig-Toml:${project.toml_version}"){transitive = false}
     compileOnly ("org.projectlombok:lombok:1.18.24")
     modCompileOnly ("maven.modrinth:vanish:1.5.2-1.20.1")
+    modCompileOnly ("maven.modrinth:carpet:1.4.112-1.20.1")
     annotationProcessor ("org.projectlombok:lombok:1.18.24")
 }
 

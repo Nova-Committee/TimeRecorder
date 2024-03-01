@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import top.infsky.mcstats.McStats;
+import top.infsky.mcstats.compat.CarpetCompat;
 import top.infsky.mcstats.compat.VanishAPI;
 import top.infsky.mcstats.config.ModConfig;
 import top.infsky.mcstats.log.LogUtils;
@@ -24,7 +25,9 @@ public class StatsData {
 
     private static LocalTime REPORT_TIME; // 数据报告时间
 
-    public HashMap<UUID, PlayerData> dataMap;  // 玩家统计信息
+    public HashMap<UUID, PlayerData> playerDataMap;  // 玩家统计信息
+
+    public HashMap<UUID, PlayerData> botDataMap;  // 机器人统计信息
 
     public HashMap<UUID, Boolean> onlineMap;  // 实时上线列表
 
@@ -39,9 +42,9 @@ public class StatsData {
 
     /**
      * 每tick更新玩家统计信息
-     * @param server 传null也不是不行
+     * @param ignoredServer 传null也不是不行
      */
-    public void update(MinecraftServer server) {
+    public void update(MinecraftServer ignoredServer) {
         onlineMap.forEach((UUID player, Boolean online) -> onlineMap.replace(player, false));
 
         // 遍历所有在线玩家
@@ -50,11 +53,22 @@ public class StatsData {
                 if (!onlineMap.containsKey(player.getUUID())) {
                     // 添加不被包含在统计信息中的玩家
                     onlineMap.put(player.getUUID(), true);
-                    dataMap.put(player.getUUID(), new PlayerData(player));
+                    if ((CarpetCompat.isFakePlayer(player))) {
+                        botDataMap.put(player.getUUID(), new PlayerData(player, true));
+                    } else {
+                        playerDataMap.put(player.getUUID(), new PlayerData(player, false));
+                    }
                 }
                 // 更新统计信息
                 onlineMap.replace(player.getUUID(), true);
-                dataMap.get(player.getUUID()).timeAdd();
+
+                // 不想写判空
+                try {
+                    playerDataMap.get(player.getUUID()).timeAdd();
+                } catch (NullPointerException ignored) {}
+                try {
+                    botDataMap.get(player.getUUID()).timeAdd();
+                } catch (NullPointerException ignored) {}
             }
         }
 
@@ -72,7 +86,7 @@ public class StatsData {
 
     public void report() {
         LogUtils.LOGGER.info("输出统计信息...");
-        String result = FamilyReport.getString(onlineMap, dataMap);
+        String result = FamilyReport.getString(playerDataMap, botDataMap);
         LogUtils.LOGGER.info(result);
 
         McBot.sendGroupMsg(result);
@@ -80,20 +94,23 @@ public class StatsData {
     }
 
     public String getReport() {
-        return FamilyReport.getString(onlineMap, dataMap);
+        return FamilyReport.getString(playerDataMap, botDataMap);
     }
 
     public String getFullReport() {
         StringBuilder result = new StringBuilder();
-        for (PlayerData playerData : dataMap.values()) {
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()))).append('\n');
+        for (PlayerData botData : botDataMap.values()) {
+            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getPlayer().getUUID()), true)).append('\n');
+        }
+        for (PlayerData playerData : playerDataMap.values()) {
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()), false)).append('\n');
         }
         return result.toString();
     }
 
     public void reset() {
         LogUtils.LOGGER.info("重置统计信息...");
-        dataMap = new HashMap<>();
+        playerDataMap = new HashMap<>();
         onlineMap = new HashMap<>();
     }
 }

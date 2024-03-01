@@ -19,6 +19,8 @@ public class ConnectCommand {
                 McBot.bot = McBot.service.ws.createBot();//创建机器人实例
             }, "BotServer");
             McBot.app.start();
+            LogUtils.LOGGER.info("QQ机器人已连接");
+            context.getSource().sendSuccess(() -> Component.literal("连接成功。"), true);
         } catch (Exception e) {
             LogUtils.LOGGER.error("§c机器人服务端配置不正确");
         }

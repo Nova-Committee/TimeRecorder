@@ -23,6 +23,7 @@ public class McBot {
                 bot = service.ws.createBot();//创建机器人实例
             }, "BotServer");
             app.start();
+            LogUtils.LOGGER.info("QQ机器人已连接");
         } catch (Exception e) {
             LogUtils.LOGGER.error("▌ §c机器人服务端未配置或未打开");
         }
