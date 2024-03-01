@@ -108,6 +108,7 @@ public class StatsData {
     public void reset() {
         LogUtils.LOGGER.info("重置统计信息...");
         playerDataMap = new HashMap<>();
+        botDataMap = new HashMap<>();
         onlineMap = new HashMap<>();
     }
 }
