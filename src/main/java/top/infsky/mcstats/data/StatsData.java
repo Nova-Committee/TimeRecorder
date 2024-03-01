@@ -61,14 +61,11 @@ public class StatsData {
                 }
                 // 更新统计信息
                 onlineMap.replace(player.getUUID(), true);
-
-                // 不想写判空
-                try {
-                    playerDataMap.get(player.getUUID()).timeAdd();
-                } catch (NullPointerException ignored) {}
-                try {
+                if (CarpetCompat.isFakePlayer(player)) {
                     botDataMap.get(player.getUUID()).timeAdd();
-                } catch (NullPointerException ignored) {}
+                } else {
+                    playerDataMap.get(player.getUUID()).timeAdd();
+                }
             }
         }
 
