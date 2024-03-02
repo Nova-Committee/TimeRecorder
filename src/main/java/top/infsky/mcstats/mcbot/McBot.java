@@ -17,6 +17,15 @@ public class McBot {
 
     static {
         blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
+        messageThread = new MessageThread();  // 创建消息处理线程池
+    }
+
+    /**
+     * 连接QQ机器人
+     * @return true -> 成功 | false -> 失败
+     */
+    public static boolean init() {
+        LogUtils.LOGGER.info("连接QQ机器人");
         try {
             app = new Thread(() -> {
                 service = new ConnectFactory(ModConfig.INSTANCE.getBotConfig().toBot(), blockingQueue);//创建websocket连接
@@ -24,10 +33,11 @@ public class McBot {
             }, "BotServer");
             app.start();
             LogUtils.LOGGER.info("QQ机器人已连接");
+            return true;
         } catch (Exception e) {
             LogUtils.LOGGER.error("▌ §c机器人服务端未配置或未打开");
         }
-        messageThread = new MessageThread();  // 创建消息处理线程池
+        return false;
     }
 
     public static void sendGroupMsg(String message){

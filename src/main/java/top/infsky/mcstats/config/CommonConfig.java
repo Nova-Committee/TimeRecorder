@@ -21,11 +21,16 @@ public class CommonConfig extends AutoLoadTomlConfig {
 
     @TableField(rightComment = "统计数据输出时间(24小时制)")
     private String time = "00:00:00";
+    @TableField(rightComment = "统计指令列表")
+    private List<String> commandStatsList = new ArrayList<>() {{
+        add("gamemode");
+        add("tp");
+    }};
 
     @TableField(rightComment = "开启Q群功能")
     private boolean groupOn = true;
     @TableField(rightComment = "Q群列表")
-    private List<Long> groupIdList = new ArrayList<Long>(){};//支持多个q群
+    private List<Long> groupIdList = new ArrayList<>();//支持多个q群
     @TableField(rightComment = "机器人qq")
     private long botId = 0;//机器人qq
 

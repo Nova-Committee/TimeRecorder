@@ -48,8 +48,9 @@ public class McStats implements ModInitializer {
 
     public void onServerStarted(MinecraftServer server) {
         statsData = new StatsData();
-
         ServerTickEvents.END_SERVER_TICK.register(statsData::update);
+
+        McBot.init();
     }
 
     public void onServerStopping(MinecraftServer server) {

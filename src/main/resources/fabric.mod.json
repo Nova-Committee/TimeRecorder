@@ -18,6 +18,9 @@
       "top.infsky.mcstats.McStats"
     ]
   },
+  "mixins": [
+    "mc-stats.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",

@@ -97,10 +97,12 @@ public class StatsData {
     public String getFullReport() {
         StringBuilder result = new StringBuilder();
         for (PlayerData botData : botDataMap.values()) {
-            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getPlayer().getUUID()), true)).append('\n');
+            // bot
+            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getPlayer().getUUID()), true, botData.getPlayer().hasPermissions(2))).append('\n');
         }
         for (PlayerData playerData : playerDataMap.values()) {
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()), false)).append('\n');
+            // player or op
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()), false, playerData.getPlayer().hasPermissions(2))).append('\n');
         }
         return result.toString();
     }

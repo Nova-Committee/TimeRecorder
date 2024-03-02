@@ -3,10 +3,9 @@ package top.infsky.mcstats.data;
 import com.google.gson.JsonObject;
 import lombok.val;
 import net.minecraft.world.entity.player.Player;
+import top.infsky.mcstats.config.ModConfig;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class FamilyReport {
     public static String getString(Map<UUID, PlayerData> playerData, Map<UUID, PlayerData> botData) {
@@ -29,16 +28,18 @@ public class FamilyReport {
         );
     }
 
-    public static String getString(PlayerData data, boolean online, boolean isFakePlayer) {
+    public static String getString(PlayerData data, boolean online, boolean isFakePlayer, boolean isOp) {
         return String.format(
                 """
                 §r§n§l%s：§7%s  §r%s§r
-                 §r上线时长：§7%s§r
+                 §r上线时长：§7%s§r%s%s
                 """,
-                isFakePlayer ? "机器人" : "玩家",
+                isFakePlayer ? "机器人" : isOp ? "管理员" : "玩家",
                 data.getPlayer().getName().getString(),
                 online ? "§a在线" : "§4离线",
-                data.getPlayTime() < 1200 ? data.getPlayTime() / 20 + "秒" : data.getPlayTime() / 1200 + "分钟"
+                data.getPlayTime() < 1200 ? data.getPlayTime() / 20 + "秒" : data.getPlayTime() / 1200 + "分钟",
+                isOp ? "\n§r使用指令：\n" : "",
+                isOp ? getCommandUsed(data) : ""
         );
     }
 
@@ -61,5 +62,29 @@ public class FamilyReport {
 
         if (player != null) return List.of(player.getName().getString(), maxTime);
         return List.of("无", 0L);
+    }
+
+    public static String getCommandUsed(PlayerData data) {
+        final List<String> baseCmdUsed = data.getOPCommandUsed();
+        if (baseCmdUsed.isEmpty()) return "无";
+
+        // 从ModConfig生成map
+        Map<String, Integer> commands = new HashMap<>();
+        ModConfig.INSTANCE.getCommon().getCommandStatsList().forEach(string -> {
+            if (baseCmdUsed.contains(string)) {
+                for (String cmd : baseCmdUsed) {
+                    val count = commands.get(cmd);
+                    commands.put(cmd, (count == null) ? 1 : count + 1);
+                }
+            }
+        });
+
+        // 格式化字符串
+        StringBuilder back = new StringBuilder();
+        for (String cmd : commands.keySet()) {
+            back.append(String.format("  §f%s : §r%s次", cmd, commands.get(cmd)));
+        }
+
+        return back.toString();
     }
 }
