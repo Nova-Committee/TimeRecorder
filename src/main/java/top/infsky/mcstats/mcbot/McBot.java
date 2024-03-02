@@ -3,13 +3,14 @@ package top.infsky.mcstats.mcbot;
 import cn.evole.onebot.client.connection.ConnectFactory;
 import cn.evole.onebot.client.core.Bot;
 import cn.evole.onebot.sdk.util.BotUtils;
+import com.google.gson.JsonObject;
 import top.infsky.mcstats.config.ModConfig;
 import top.infsky.mcstats.log.LogUtils;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class McBot {
-    public static LinkedBlockingQueue<String> blockingQueue;
+    public static LinkedBlockingQueue<JsonObject> blockingQueue;
     public static ConnectFactory service;
     public static Bot bot;
     public static Thread app;
@@ -27,11 +28,8 @@ public class McBot {
     public static boolean init() {
         LogUtils.LOGGER.info("连接QQ机器人");
         try {
-            app = new Thread(() -> {
-                service = new ConnectFactory(ModConfig.INSTANCE.getBotConfig().toBot(), blockingQueue);//创建websocket连接
-                bot = service.ws.createBot();//创建机器人实例
-            }, "BotServer");
-            app.start();
+            service = new ConnectFactory(ModConfig.INSTANCE.getBotConfig().toBot(), blockingQueue);//创建websocket连接
+            bot = service.getBot();//创建机器人实例
             LogUtils.LOGGER.info("QQ机器人已连接");
             return true;
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package top.infsky.mcstats.mixins;
 
+import com.mojang.brigadier.ParseResults;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.jetbrains.annotations.NotNull;
@@ -9,18 +10,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.infsky.mcstats.McStats;
 import top.infsky.mcstats.config.ModConfig;
-import top.infsky.mcstats.log.LogUtils;
 
 import java.util.Objects;
 
 @Mixin(Commands.class)
 public class MixinCommand {
-    @Inject(method = "performPrefixedCommand", at = @At("HEAD"))
-    public void performPrefixedCommand(@NotNull CommandSourceStack commandSourceStack, String string, CallbackInfoReturnable<Integer> cir) {
-        LogUtils.LOGGER.info(String.format("cur command: %s", string));
+    @Inject(method = "performCommand", at = @At("HEAD"))
+    public void performPrefixedCommand(@NotNull ParseResults<CommandSourceStack> parseResults, String string, CallbackInfoReturnable<Integer> cir) {
+        CommandSourceStack commandSourceStack = parseResults.getContext().getSource();
         if (!commandSourceStack.hasPermission(2)) return;
 
-        final String cmd = string.substring(1).split(" ")[0];
+        final String cmd = string.split(" ")[0];
         if (!ModConfig.INSTANCE.getCommon().getCommandStatsList().contains(cmd)) return;
         try {
             McStats.getStatsData().getPlayerDataMap().get(Objects.requireNonNull(commandSourceStack.getPlayer()).getUUID()).OPCommandUsed.add(cmd);

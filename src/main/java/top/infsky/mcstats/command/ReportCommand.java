@@ -8,9 +8,9 @@ import top.infsky.mcstats.McStats;
 import top.infsky.mcstats.log.LogUtils;
 
 public class ReportCommand {
-    public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static int execute(CommandContext<CommandSourceStack> context) {
         LogUtils.LOGGER.info("通过指令输出报告 report");
-        context.getSource().sendSuccess(() -> Component.literal(McStats.getStatsData().getReport()), true);
+        context.getSource().sendSuccess(() -> Component.literal(McStats.getStatsData().getReport()), false);
         return 1;
     }
 }
