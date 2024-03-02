@@ -22,10 +22,7 @@ public class CommonConfig extends AutoLoadTomlConfig {
     @TableField(rightComment = "统计数据输出时间(24小时制)")
     private String time = "00:00:00";
     @TableField(rightComment = "统计指令列表")
-    private List<String> commandStatsList = new ArrayList<>() {{
-        add("gamemode");
-        add("tp");
-    }};
+    private List<String> commandStatsList = new ArrayList<>();
 
     @TableField(rightComment = "开启Q群功能")
     private boolean groupOn = true;
@@ -36,13 +33,19 @@ public class CommonConfig extends AutoLoadTomlConfig {
 
     public CommonConfig() {
         super(null);
+        init();
     }
 
     public CommonConfig(TomlTable source) {
         super(source);
         this.load(CommonConfig.class);
+        init();
     }
 
+    private void init() {
+        commandStatsList.add("gamemode");
+        commandStatsList.add("tp");
+    }
     public void removeGroupId(long id) {
         groupIdList.remove(id);
     }

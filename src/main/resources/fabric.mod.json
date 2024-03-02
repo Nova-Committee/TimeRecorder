@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "mc-stats",
+  "id": "mcstats",
   "version": "${version}",
   "name": "McStats",
   "description": "A mod allows you to display server statistics.",
@@ -8,10 +8,10 @@
     "xia__mc"
   ],
   "contact": {
-    "repo": "https://github.com/Administrator/McStats"
+    "repo": "https://github.com/xia-mc/McStats"
   },
   "license": "GPL-3.0",
-  "icon": "assets/mc-stats/icon.png",
+  "icon": "assets/mcstats/icon.png",
   "environment": "server",
   "entrypoints": {
     "main": [
@@ -19,7 +19,7 @@
     ]
   },
   "mixins": [
-    "mc-stats.mixins.json"
+    "mcstats.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

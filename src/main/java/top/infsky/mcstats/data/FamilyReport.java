@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import lombok.val;
 import net.minecraft.world.entity.player.Player;
 import top.infsky.mcstats.config.ModConfig;
+import top.infsky.mcstats.log.LogUtils;
 
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class FamilyReport {
                 data.getPlayer().getName().getString(),
                 online ? "§a在线" : "§4离线",
                 data.getPlayTime() < 1200 ? data.getPlayTime() / 20 + "秒" : data.getPlayTime() / 1200 + "分钟",
-                isOp ? "\n§r使用指令：\n" : "",
+                isOp ? "\n§r使用指令：" : "",
                 isOp ? getCommandUsed(data) : ""
         );
     }
@@ -66,21 +67,19 @@ public class FamilyReport {
 
     public static String getCommandUsed(PlayerData data) {
         final List<String> baseCmdUsed = data.getOPCommandUsed();
+        LogUtils.LOGGER.info(baseCmdUsed.toString());
         if (baseCmdUsed.isEmpty()) return "无";
 
         // 从ModConfig生成map
         Map<String, Integer> commands = new HashMap<>();
-        ModConfig.INSTANCE.getCommon().getCommandStatsList().forEach(string -> {
-            if (baseCmdUsed.contains(string)) {
-                for (String cmd : baseCmdUsed) {
-                    val count = commands.get(cmd);
-                    commands.put(cmd, (count == null) ? 1 : count + 1);
-                }
-            }
-        });
+        for (String cmd : baseCmdUsed) {
+            val count = commands.get(cmd);
+            commands.put(cmd, (count == null) ? 1 : count + 1);
+        }
 
         // 格式化字符串
         StringBuilder back = new StringBuilder();
+        back.append('\n');
         for (String cmd : commands.keySet()) {
             back.append(String.format("  §f%s : §r%s次", cmd, commands.get(cmd)));
         }
