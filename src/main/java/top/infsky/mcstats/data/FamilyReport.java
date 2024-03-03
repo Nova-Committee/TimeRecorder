@@ -18,7 +18,7 @@ public class FamilyReport {
                  上线最久的玩家：%s %s
                  上线最久的机器人：%s %s
                  今日活跃玩家：
-                 %s
+                %s
                  感谢各位玩家对服务器做出的贡献！
                 """,
                 playerData.keySet().size(),
@@ -92,7 +92,7 @@ public class FamilyReport {
     public static String getOnlinePlayerList(Map<UUID, PlayerData> dataMap) {
         StringBuilder back = new StringBuilder();
         for (PlayerData player : dataMap.values()) {
-            back.append("  ").append(player.getPlayer().getName().getString()).append("\n");
+            back.append("   ").append(player.getPlayer().getName().getString()).append("\n");
         }
         return back.toString();
     }
