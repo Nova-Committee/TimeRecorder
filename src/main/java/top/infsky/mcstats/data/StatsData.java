@@ -105,7 +105,7 @@ public class StatsData {
             result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()), false, playerData.getPlayer().hasPermissions(2))).append('\n');
         }
 
-        result.delete(result.length() - 4, result.length() - 1);
+        result.delete(result.length() - 3, result.length() - 1);
         return result.toString();
     }
 

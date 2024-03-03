@@ -14,9 +14,11 @@ public class FamilyReport {
         return String.format(
                 """
                 ----------服务器日报----------
-                 日活：%s | 机器人日活：%s
+                 玩家日活：%s | 机器人日活：%s
                  上线最久的玩家：%s %s
                  上线最久的机器人：%s %s
+                 今日活跃玩家：
+                 %s
                  感谢各位玩家对服务器做出的贡献！
                 """,
                 playerData.keySet().size(),
@@ -24,7 +26,8 @@ public class FamilyReport {
                 longestOnlinePlayer.get(0),
                 (Long) longestOnlinePlayer.get(1) < 1200 ? (Long) longestOnlinePlayer.get(1) / 20 + "秒" : (Long) longestOnlinePlayer.get(1) / 1200 + "分钟",
                 longestOnlineBot.get(0),
-                (Long) longestOnlineBot.get(1) < 1200 ? (Long) longestOnlineBot.get(1) / 20 + "秒" : (Long) longestOnlineBot.get(1) / 1200 + "分钟"
+                (Long) longestOnlineBot.get(1) < 1200 ? (Long) longestOnlineBot.get(1) / 20 + "秒" : (Long) longestOnlineBot.get(1) / 1200 + "分钟",
+                getOnlinePlayerList(playerData)
         );
     }
 
@@ -84,5 +87,13 @@ public class FamilyReport {
         }
 
         return back.toString();
+    }
+
+    public static String getOnlinePlayerList(Map<UUID, PlayerData> dataMap) {
+        StringBuilder back = new StringBuilder();
+        for (PlayerData player : dataMap.values()) {
+            back.append("  ").append(player.getPlayer().getName().getString()).append("\n");
+        }
+        return back.substring(0, back.length() - 2);
     }
 }
