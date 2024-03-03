@@ -3,6 +3,7 @@ package top.infsky.mcstats.command;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.GameRules;
 
 public class HelpCommand {
     private static final String opHelpMsg = """
@@ -20,7 +21,15 @@ public class HelpCommand {
                 §r/mcstats report §f- §7显示当日截止目前的统计信息§r
                 """;
     public static int execute(CommandContext<CommandSourceStack> context) {
-        context.getSource().sendSuccess(() -> Component.literal(context.getSource().hasPermission(2) ? opHelpMsg : memberHelpMsg), false);
+        if (context.getSource().hasPermission(2)) {
+            context.getSource().sendSuccess(() -> Component.literal(opHelpMsg), false);
+        } else {
+            final boolean tmpRule = context.getSource().getLevel().getGameRules().getRule(GameRules.RULE_SENDCOMMANDFEEDBACK).get();
+            context.getSource().getLevel().getGameRules().getRule(GameRules.RULE_SENDCOMMANDFEEDBACK).set(true, context.getSource().getServer());
+            context.getSource().sendSuccess(() -> Component.literal(memberHelpMsg), false);
+            context.getSource().getLevel().getGameRules().getRule(GameRules.RULE_SENDCOMMANDFEEDBACK).set(tmpRule, context.getSource().getServer());
+        }
+
         return 1;
     }
 }

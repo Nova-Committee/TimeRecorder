@@ -94,6 +94,6 @@ public class FamilyReport {
         for (PlayerData player : dataMap.values()) {
             back.append("  ").append(player.getPlayer().getName().getString()).append("\n");
         }
-        return back.substring(0, back.length() - 2);
+        return back.toString();
     }
 }
