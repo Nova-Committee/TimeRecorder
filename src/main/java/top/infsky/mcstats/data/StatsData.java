@@ -23,7 +23,7 @@ public class StatsData {
 
     private LocalDate NextDay;  // 明天
 
-    private static LocalTime REPORT_TIME; // 数据报告时间
+    public LocalTime REPORT_TIME; // 数据报告时间
 
     public HashMap<UUID, PlayerData> playerDataMap;  // 玩家统计信息
 
@@ -31,13 +31,33 @@ public class StatsData {
 
     public HashMap<UUID, Boolean> onlineMap;  // 实时上线列表
 
+    /**
+     * 生成一个空的实例
+     */
     public StatsData() {
+        init();
+        reset();
+    }
+
+    /**
+     * 从已有数据还原实例
+     * @param playerDataMap 玩家数据
+     * @param botDataMap 机器人数据
+     * @param onlineMap 在线列表
+     */
+    public StatsData(HashMap<UUID, PlayerData> playerDataMap, HashMap<UUID, PlayerData> botDataMap, HashMap<UUID, Boolean> onlineMap) {
+        this.playerDataMap = playerDataMap;
+        this.botDataMap = botDataMap;
+        this.onlineMap = onlineMap;
+        init();
+    }
+
+    public void init() {
         val time = ModConfig.INSTANCE.getCommon().getTime().split(":");  // 00:00:00 24-hour
         REPORT_TIME = LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
 
         if (LocalTime.now().isAfter(REPORT_TIME)) Reported = true;
         NextDay = LocalDate.now().plusDays(1);
-        reset();
     }
 
     /**
@@ -50,22 +70,18 @@ public class StatsData {
         // 遍历所有在线玩家
         for (Player player : McStats.getSERVER().getPlayerList().getPlayers()) {
             if (!VanishAPI.isVanished(player)) {  // Vanish 支持
-                if (!onlineMap.containsKey(player.getUUID())) {
+                final UUID uuid = player.getUUID();
+                if (!onlineMap.containsKey(uuid)) {
                     // 添加不被包含在统计信息中的玩家
-                    onlineMap.put(player.getUUID(), true);
+                    onlineMap.put(uuid, true);
                     if ((CarpetCompat.isFakePlayer(player))) {
-                        botDataMap.put(player.getUUID(), new PlayerData(player, true));
+                        botDataMap.put(uuid, new PlayerData(player, true));
                     } else {
-                        playerDataMap.put(player.getUUID(), new PlayerData(player, false));
+                        playerDataMap.put(uuid, new PlayerData(player, false));
                     }
                 }
                 // 更新统计信息
-                onlineMap.replace(player.getUUID(), true);
-                if (CarpetCompat.isFakePlayer(player)) {
-                    botDataMap.get(player.getUUID()).timeAdd();
-                } else {
-                    playerDataMap.get(player.getUUID()).timeAdd();
-                }
+                update(player, uuid);
             }
         }
 
@@ -77,6 +93,39 @@ public class StatsData {
                 Reported = true;
                 report();
                 reset();
+            }
+        }
+    }
+
+    private void update(Player player, UUID uuid) {
+        onlineMap.replace(uuid, true);
+        if (CarpetCompat.isFakePlayer(player)) {
+            try {
+                botDataMap.get(uuid).timeAdd();
+            } catch (NullPointerException e) {
+                LogUtils.LOGGER.error(String.format("机器人 %s 的数据不存在！尝试从玩家数据迁移。", player.getName()));
+                try {
+                    botDataMap.put(uuid, playerDataMap.remove(uuid));
+                    update(player, uuid);
+                } catch (NullPointerException e2) {
+                    LogUtils.LOGGER.error(String.format("机器人 %s 的数据不存在于任何！丢弃机器人。", player.getName()));
+                    onlineMap.remove(uuid);
+                }
+            }
+        } else {
+            try {
+                playerDataMap.get(uuid).timeAdd();
+            } catch (NullPointerException e) {
+                LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在！尝试从机器人数据迁移。", player.getName()));
+                try {
+                    PlayerData tmpData = botDataMap.remove(uuid);
+                    tmpData.fakePlayer = false;
+                    playerDataMap.put(uuid, tmpData);
+                    update(player, uuid);
+                } catch (NullPointerException e2) {
+                    LogUtils.LOGGER.error(String.format("机器人 %s 的数据不存在于任何！丢弃玩家。", player.getName()));
+                    onlineMap.remove(uuid);
+                }
             }
         }
     }
@@ -98,11 +147,11 @@ public class StatsData {
         StringBuilder result = new StringBuilder();
         for (PlayerData botData : botDataMap.values()) {
             // bot
-            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getPlayer().getUUID()), true, botData.getPlayer().hasPermissions(2))).append('\n');
+            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getUUID()), true, botData.isOP())).append('\n');
         }
         for (PlayerData playerData : playerDataMap.values()) {
             // player or op
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getPlayer().getUUID()), false, playerData.getPlayer().hasPermissions(2))).append('\n');
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getUUID()), false, playerData.isOP())).append('\n');
         }
 
         result.delete(result.length() - 3, result.length() - 1);

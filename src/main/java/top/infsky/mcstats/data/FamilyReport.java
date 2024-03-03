@@ -1,8 +1,6 @@
 package top.infsky.mcstats.data;
 
-import com.google.gson.JsonObject;
 import lombok.val;
-import net.minecraft.world.entity.player.Player;
 import top.infsky.mcstats.log.LogUtils;
 
 import java.util.*;
@@ -38,7 +36,7 @@ public class FamilyReport {
                  §r上线时长：§7%s§r%s%s
                 """,
                 isFakePlayer ? "机器人" : isOp ? "管理员" : "玩家",
-                data.getPlayer().getName().getString(),
+                data.getName(),
                 online ? "§a在线" : "§4离线",
                 data.getPlayTime() < 1200 ? data.getPlayTime() / 20 + "秒" : data.getPlayTime() / 1200 + "分钟",
                 isOp ? "\n §r使用指令：" : "",
@@ -46,24 +44,18 @@ public class FamilyReport {
         );
     }
 
-    @SuppressWarnings("unused")
-    public static JsonObject getJson(Map<UUID, Boolean> onlineMap, Map<UUID, PlayerData> dataMap) {
-        // TODO 写不了一点
-        return null;
-    }
-
     public static List<Object> getLongestOnlinePlayer(Map<UUID, PlayerData> dataMap) {
-        Player player = null;
+        String name = null;
         long maxTime = 0;
 
         for (PlayerData data : dataMap.values()) {
             if (data.getPlayTime() > maxTime) {
-                player = data.getPlayer();
+                name = data.getName();
                 maxTime = data.getPlayTime();
             }
         }
 
-        if (player != null) return List.of(player.getName().getString(), maxTime);
+        if (name != null) return List.of(name, maxTime);
         return List.of("无", 0L);
     }
 
@@ -86,17 +78,19 @@ public class FamilyReport {
             back.append(String.format("  §f%s : §r%s次\n", cmd, commands.get(cmd)));
         }
 
+        final int i = back.lastIndexOf("\n");
+        if (i == back.length() - 1) back.delete(i, i + 1);
         return back.toString();
     }
 
     public static String getOnlinePlayerList(Map<UUID, PlayerData> dataMap) {
         StringBuilder back = new StringBuilder();
         for (PlayerData player : dataMap.values()) {
-            back.append("   ").append(player.getPlayer().getName().getString()).append("\n");
+            back.append("   ").append(player.getName()).append("\n");
         }
 
         final int i = back.lastIndexOf("\n");
-        if (i == back.length() - 2) back.delete(i, i + 1);
+        if (i == back.length() - 1) back.delete(i, i + 1);
         return back.toString();
     }
 }

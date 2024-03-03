@@ -10,11 +10,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import top.infsky.mcstats.command.ICmdEvent;
 import top.infsky.mcstats.data.StatsData;
+import top.infsky.mcstats.data.StatsDump;
 import top.infsky.mcstats.mcbot.McBot;
 
 import java.nio.file.Path;
 
 public class McStats implements ModInitializer {
+    @Getter
+    public static String MOD_ID = "mcstats";
     @Getter
     public static MinecraftServer SERVER = null;
     public static Path CONFIG_FOLDER;
@@ -48,12 +51,13 @@ public class McStats implements ModInitializer {
 
     public void onServerStarted(MinecraftServer server) {
         statsData = new StatsData();
-        ServerTickEvents.END_SERVER_TICK.register(statsData::update);
+        ServerTickEvents.END_SERVER_TICK.register(getStatsData()::update);
 
         McBot.init();
     }
 
     public void onServerStopping(MinecraftServer server) {
+        StatsDump.save(StatsDump.getDump(getStatsData()));
         McBot.stop();
     }
     public void onServerStopped(MinecraftServer server) {

@@ -13,6 +13,7 @@ public class HelpCommand {
                 §r/mcstats reportQQ §f- §7显示和发送当日截止目前的统计信息到QQ§r
                 §r/mcstats reportAll §f- §7显示当日截止目前的所有玩家的统计信息§r
                 §r/mcstats connect §f- §7连接到QQ机器人§r
+                §r/mcstats reload §f- §7从配置文件重载§r
                 """;
 
     private static final String memberHelpMsg = """
