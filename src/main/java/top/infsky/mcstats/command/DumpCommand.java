@@ -11,16 +11,18 @@ public class DumpCommand {
     public static class Save {
         public static int execute(CommandContext<CommandSourceStack> context) {
             LogUtils.LOGGER.info("通过指令保存统计数据");
-            context.getSource().sendSuccess(() -> Component.literal("正在保存统计数据..."), true);
 
-            return StatsDump.save(StatsDump.getDump(McStats.getStatsData()));
+            if (StatsDump.save(StatsDump.getDump(McStats.getStatsData())) == 1) {
+                context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。"), true);
+                return 1;
+            }
+            return -1;
         }
     }
 
     public static class Load {
         public static int execute(CommandContext<CommandSourceStack> context) {
             LogUtils.LOGGER.info("通过指令加载统计数据");
-            context.getSource().sendSuccess(() -> Component.literal("正在加载统计数据..."), true);
 
             try {
                 StatsDump.load();

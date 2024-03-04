@@ -2,6 +2,7 @@ package top.infsky.mcstats.data;
 
 import lombok.Getter;
 import lombok.val;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -58,6 +59,8 @@ public class StatsData {
 
         if (LocalTime.now().isAfter(REPORT_TIME)) Reported = true;
         NextDay = LocalDate.now().plusDays(1);
+
+        ServerTickEvents.END_SERVER_TICK.register(this::update);
     }
 
     /**

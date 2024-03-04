@@ -1,6 +1,7 @@
 package top.infsky.mcstats.data;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.val;
@@ -76,7 +77,9 @@ public class StatsDump {
             singlePlayerData.addProperty("OP", data.isOP());
             singlePlayerData.addProperty("fakePlayer", data.isFakePlayer());
             singlePlayerData.addProperty("playTime", data.getPlayTime());
-            singlePlayerData.add("OPCommandUsed", (JsonElement) data.getOPCommandUsed());  // from list to json element.
+            JsonArray OPCommandUsed = new JsonArray();
+            data.getOPCommandUsed().forEach(OPCommandUsed::add);
+            singlePlayerData.add("OPCommandUsed", OPCommandUsed);  // from list to json element.
             playerDataMap.add(uuid.toString(), singlePlayerData);
         }
         dump.add("playerDataMap", playerDataMap);
@@ -90,7 +93,9 @@ public class StatsDump {
             singleBotData.addProperty("OP", data.isOP());
             singleBotData.addProperty("fakePlayer", data.isFakePlayer());
             singleBotData.addProperty("playTime", data.getPlayTime());
-            singleBotData.add("OPCommandUsed", (JsonElement) data.getOPCommandUsed());
+            JsonArray OPCommandUsed = new JsonArray();
+            data.getOPCommandUsed().forEach(OPCommandUsed::add);
+            singleBotData.add("OPCommandUsed", OPCommandUsed);  // from list to json element.
             botDataMap.add(uuid.toString(), singleBotData);
         }
         dump.add("botDataMap", botDataMap);
@@ -115,7 +120,7 @@ public class StatsDump {
                 throw new RuntimeException(String.format("模组'%s'意外不存在！联系模组制作者或检查你的模组列表。", McStats.getMOD_ID()));
             }
             // 配置文件哈希
-            if (dump.get("hash").getAsInt() != ModConfig.INSTANCE.getCommon().getTime().hashCode())
+            if (dump.get("hash").getAsInt() != McStats.getStatsData().REPORT_TIME.hashCode())
                 throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 配置文件错误。");
             // 时间
             val baseReportTime = ModConfig.INSTANCE.getCommon().getTime().split(":");
