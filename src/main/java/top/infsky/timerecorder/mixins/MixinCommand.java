@@ -17,6 +17,7 @@ import java.util.Objects;
 public class MixinCommand {
     @Inject(method = "performCommand", at = @At("HEAD"))
     public void performPrefixedCommand(@NotNull ParseResults<CommandSourceStack> parseResults, String string, CallbackInfoReturnable<Integer> cir) {
+        if (!ModConfig.INSTANCE.getCommon().isAllowCommandStats()) return;  // 绷
         CommandSourceStack commandSourceStack = parseResults.getContext().getSource();
         if (!commandSourceStack.hasPermission(2)) return;
 

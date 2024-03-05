@@ -21,6 +21,8 @@ public class CommonConfig extends AutoLoadTomlConfig {
 
     @TableField(rightComment = "统计数据输出时间(24小时制)")
     private String time = "00:00:00";
+    @TableField(rightComment = "允许统计指令")
+    private boolean allowCommandStats = true;
     @TableField(rightComment = "统计指令列表")
     private List<String> commandStatsList = new ArrayList<>();
 
