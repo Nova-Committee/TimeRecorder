@@ -26,7 +26,7 @@
 ## 如何使用
 从[Github Action](https://github.com/xia-mc/TimeRecorder/actions)获取开发版。
 
-从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取稳定版。（暂无）
+从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取稳定版。
 
 - 安装mod到服务端 **（1.20.1 fabric）**
 - 启动支持```onebot```协议的QQ机器人。
