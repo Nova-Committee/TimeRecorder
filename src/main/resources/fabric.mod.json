@@ -1,25 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "mcstats",
+  "id": "timerecorder",
   "version": "${version}",
-  "name": "McStats",
-  "description": "A mod allows you to display server statistics.",
+  "name": "TimeRecorder",
+  "description": "A mod allows you to record server statistics.",
   "authors": [
     "xia__mc"
   ],
   "contact": {
-    "repo": "https://github.com/xia-mc/McStats"
+    "repo": "https://github.com/xia-mc/TimeRecorder"
   },
   "license": "GPL-3.0",
-  "icon": "assets/mcstats/icon.png",
+  "icon": "assets/timerecorder/icon.png",
   "environment": "server",
   "entrypoints": {
     "main": [
-      "top.infsky.mcstats.McStats"
+      "top.infsky.timerecorder.TimeRecorder"
     ]
   },
   "mixins": [
-    "mcstats.mixins.json"
+    "timerecorder.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
