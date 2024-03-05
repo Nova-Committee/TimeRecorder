@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="256" src="https://github.com/xia-mc/McStats/assets/108219418/49530208-97e4-46a7-b339-8eaf2ea65091" alt="logo">
+  <img width="256" src="https://github.com/xia-mc/TimeRecorder/assets/108219418/49530208-97e4-46a7-b339-8eaf2ea65091" alt="logo">
 
 # McStats
 一个服务端模组，允许您统计服务器的一些信息。
@@ -24,9 +24,9 @@
 支持**Carpet** Mod：通过```/player```召唤的假人会被列入“机器人”。
 
 ## 如何使用
-从[Github Action](https://github.com/xia-mc/McStats/actions)获取开发版。
+从[Github Action](https://github.com/xia-mc/TimeRecorder/actions)获取开发版。
 
-从[Github Release](https://github.com/xia-mc/McStats/releases)获取稳定版。（暂无）
+从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取稳定版。（暂无）
 
 - 安装mod到服务端 **（1.20.1 fabric）**
 - 启动支持```onebot```协议的QQ机器人。
