@@ -2,7 +2,7 @@ package top.infsky.timerecorder.command;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.GameRules;
 
 public class HelpCommand {
@@ -24,11 +24,11 @@ public class HelpCommand {
                 """;
     public static int execute(CommandContext<CommandSourceStack> context) {
         if (context.getSource().hasPermission(2)) {
-            context.getSource().sendSuccess(() -> Component.literal(opHelpMsg), false);
+            context.getSource().sendSuccess(new TextComponent(opHelpMsg), false);
         } else {
             final boolean tmpRule = context.getSource().getLevel().getGameRules().getRule(GameRules.RULE_SENDCOMMANDFEEDBACK).get();
             context.getSource().getLevel().getGameRules().getRule(GameRules.RULE_SENDCOMMANDFEEDBACK).set(true, context.getSource().getServer());
-            context.getSource().sendSuccess(() -> Component.literal(memberHelpMsg), false);
+            context.getSource().sendSuccess(new TextComponent(memberHelpMsg), false);
             context.getSource().getLevel().getGameRules().getRule(GameRules.RULE_SENDCOMMANDFEEDBACK).set(tmpRule, context.getSource().getServer());
         }
 

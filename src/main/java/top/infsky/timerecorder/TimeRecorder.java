@@ -3,7 +3,7 @@ package top.infsky.timerecorder;
 import cn.evole.onebot.sdk.util.FileUtils;
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -29,7 +29,7 @@ public class TimeRecorder implements ModInitializer {
     public void onInitialize() {
         init();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ICmdEvent.register(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> ICmdEvent.register(dispatcher));
 
         ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
         ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);

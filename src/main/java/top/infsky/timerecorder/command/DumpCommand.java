@@ -2,7 +2,7 @@ package top.infsky.timerecorder.command;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import top.infsky.timerecorder.TimeRecorder;
 import top.infsky.timerecorder.data.StatsDump;
 import top.infsky.timerecorder.log.LogUtils;
@@ -13,7 +13,7 @@ public class DumpCommand {
             LogUtils.LOGGER.info("通过指令保存统计数据");
 
             if (StatsDump.save(StatsDump.getDump(TimeRecorder.getStatsData())) == 1) {
-                context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。"), true);
+                context.getSource().sendSuccess(new TextComponent("统计数据已保存。"), true);
                 return 1;
             }
             return -1;
@@ -26,11 +26,11 @@ public class DumpCommand {
 
             try {
                 if (StatsDump.load() == 1) {
-                    context.getSource().sendSuccess(() -> Component.literal("成功还原统计数据。"), true);
+                    context.getSource().sendSuccess(new TextComponent("成功还原统计数据。"), true);
                     return 1;
                 }
             } catch (RuntimeException e) {
-                context.getSource().sendFailure(Component.literal(e.getMessage()));
+                context.getSource().sendFailure(new TextComponent(e.getMessage()));
                 return -1;
             }
             return -1;

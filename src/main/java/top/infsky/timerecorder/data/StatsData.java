@@ -2,7 +2,8 @@ package top.infsky.timerecorder.data;
 
 import lombok.Getter;
 import lombok.val;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import top.infsky.timerecorder.TimeRecorder;
@@ -137,7 +138,7 @@ public class StatsData {
         LogUtils.LOGGER.info(result);
 
         McBot.sendGroupMsg(result);
-        TimeRecorder.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal(result), false);
+        TimeRecorder.getSERVER().getPlayerList().broadcastMessage(new TextComponent(result), ChatType.CHAT, UUID.fromString(""));
     }
 
     public String getReport() {

@@ -143,15 +143,15 @@ public class StatsDump {
         try {
             // onlineMap
             HashMap<UUID, Boolean> onlineMap = new HashMap<>();
-            dump.get("onlineMap").getAsJsonObject().asMap().forEach(
-                    (string, jsonElement) -> onlineMap.put(UUID.fromString(string), jsonElement.getAsBoolean()));
+            dump.get("onlineMap").getAsJsonObject().entrySet().forEach(
+                    (entry) -> onlineMap.put(UUID.fromString(entry.getKey()), entry.getValue().getAsBoolean()));
 
             // playerDataMap
             HashMap<UUID, PlayerData> playerDataMap = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : dump.get("playerDataMap").getAsJsonObject().entrySet()) {
                 JsonObject singlePlayerData = entry.getValue().getAsJsonObject();
                 List<String> OPCommandUsed = new LinkedList<>();
-                singlePlayerData.get("OPCommandUsed").getAsJsonArray().asList().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
+                singlePlayerData.get("OPCommandUsed").getAsJsonArray().getAsJsonArray().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
                 playerDataMap.put(UUID.fromString(entry.getKey()), new PlayerData(
                         singlePlayerData.get("name").getAsString(),
                         UUID.fromString(singlePlayerData.get("UUID").getAsString()),
@@ -167,7 +167,7 @@ public class StatsDump {
             for (Map.Entry<String, JsonElement> entry : dump.get("botDataMap").getAsJsonObject().entrySet()) {
                 JsonObject singlePlayerData = entry.getValue().getAsJsonObject();
                 List<String> OPCommandUsed = new LinkedList<>();
-                singlePlayerData.get("OPCommandUsed").getAsJsonArray().asList().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
+                singlePlayerData.get("OPCommandUsed").getAsJsonArray().getAsJsonArray().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
                 botDataMap.put(UUID.fromString(entry.getKey()), new PlayerData(
                         singlePlayerData.get("name").getAsString(),
                         UUID.fromString(singlePlayerData.get("UUID").getAsString()),

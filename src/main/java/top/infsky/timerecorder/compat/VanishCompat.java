@@ -3,7 +3,7 @@ package top.infsky.timerecorder.compat;
 import lombok.Getter;
 import me.drex.vanish.api.VanishEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
@@ -31,7 +31,7 @@ public class VanishCompat {
             // 维护列表
             vanishedPlayers.remove(serverPlayer);
             // 返回一个空的 Component
-            return Component.empty();
+            return new TextComponent("");
         });
 
         // 注册事件监听器，当玩家隐身时调用 loggedOut 方法
@@ -41,7 +41,7 @@ public class VanishCompat {
             // 维护列表
             vanishedPlayers.add(serverPlayer);
             // 返回一个空的 Component
-            return Component.empty();
+            return new TextComponent("");
         });
     }
 }
