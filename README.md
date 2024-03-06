@@ -1,7 +1,7 @@
 <div align="center">
-  <img width="256" src="https://github.com/xia-mc/TimeRecorder/assets/108219418/49530208-97e4-46a7-b339-8eaf2ea65091" alt="logo">
+  <img width="256" src="https://github.com/xia-mc/TimeRecorder/assets/108219418/d655c66e-c3a7-4f8e-aa2f-13f14b0b36a6" alt="logo">
 
-# TimeRecorder
+# 光阴：莉拉提娅
 一个服务端模组，允许您统计服务器的一些信息。
 </div>
 
