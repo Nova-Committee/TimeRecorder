@@ -2,10 +2,12 @@ package top.infsky.timerecorder.data;
 
 import lombok.Getter;
 import lombok.val;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
-import top.infsky.timerecorder.TimeRecorder;
+import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.compat.VanishAPI;
 import top.infsky.timerecorder.config.ModConfig;
@@ -15,6 +17,7 @@ import top.infsky.timerecorder.mcbot.McBot;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -61,15 +64,56 @@ public class StatsData {
         NextDay = LocalDate.now().plusDays(1);
     }
 
+    public void update(Minecraft ignoredClient) {
+        if (!Utils.isClientPlaying()) return;
+        if (Utils.getCLIENT() == null) return;
+
+        try {
+            onlineMap.forEach((UUID player, Boolean online) -> onlineMap.replace(player, false));
+
+            // 遍历所有在线玩家
+            for (PlayerInfo player : Objects.requireNonNull(Utils.getCLIENT().getConnection()).getOnlinePlayers()) {
+                final UUID uuid = player.getProfile().getId();
+                if (!onlineMap.containsKey(uuid)) {
+                    // 添加不被包含在统计信息中的玩家
+                    onlineMap.put(uuid, true);
+                    if ((CarpetCompat.isFakePlayer(player))) {
+                        botDataMap.put(uuid, new PlayerData(player, true));
+                    } else {
+                        playerDataMap.put(uuid, new PlayerData(player, false));
+                    }
+                }
+                // 更新统计信息
+                update(player, uuid);
+
+                if (ModConfig.INSTANCE.getCommon().isAllowAutoReport()) {
+                    if (isReported()) {
+                        if (LocalDate.now().isEqual(NextDay)) Reported = false;
+                    } else {
+                        if (LocalTime.now().isAfter(REPORT_TIME)) {
+                            NextDay = LocalDate.now().plusDays(1);
+                            Reported = true;
+                            report();
+                            reset();
+                        }
+                    }
+                }
+            }
+        } catch (NullPointerException ignored) {}
+    }
+
     /**
      * 每tick更新玩家统计信息
      * @param ignoredServer 传null也不是不行
      */
     public void update(MinecraftServer ignoredServer) {
+        if (Utils.isClientPlaying()) return;
+        if (Utils.getSERVER() == null) return;
+
         onlineMap.forEach((UUID player, Boolean online) -> onlineMap.replace(player, false));
 
         // 遍历所有在线玩家
-        for (Player player : TimeRecorder.getSERVER().getPlayerList().getPlayers()) {
+        for (Player player : Utils.getSERVER().getPlayerList().getPlayers()) {
             if (!VanishAPI.isVanished(player)) {  // Vanish 支持
                 final UUID uuid = player.getUUID();
                 if (!onlineMap.containsKey(uuid)) {
@@ -86,14 +130,16 @@ public class StatsData {
             }
         }
 
-        if (isReported()) {
-            if (LocalDate.now().isEqual(NextDay)) Reported = false;
-        } else {
-            if (LocalTime.now().isAfter(REPORT_TIME)) {
-                NextDay = LocalDate.now().plusDays(1);
-                Reported = true;
-                report();
-                reset();
+        if (ModConfig.INSTANCE.getCommon().isAllowAutoReport()) {
+            if (isReported()) {
+                if (LocalDate.now().isEqual(NextDay)) Reported = false;
+            } else {
+                if (LocalTime.now().isAfter(REPORT_TIME)) {
+                    NextDay = LocalDate.now().plusDays(1);
+                    Reported = true;
+                    report();
+                    reset();
+                }
             }
         }
     }
@@ -131,13 +177,57 @@ public class StatsData {
         }
     }
 
+    private void update(PlayerInfo player, UUID uuid) {
+        onlineMap.replace(uuid, true);
+        if (CarpetCompat.isFakePlayer(player)) {  // 机器人
+            try {
+                botDataMap.get(uuid).timeAdd();
+            } catch (NullPointerException e) {
+                LogUtils.LOGGER.error(String.format("机器人 %s 的数据不存在！尝试从玩家数据迁移。", player.getProfile().getName()));
+                try {
+                    botDataMap.put(uuid, playerDataMap.remove(uuid));
+                    update(player, uuid);
+                } catch (NullPointerException e2) {
+                    LogUtils.LOGGER.error(String.format("机器人 %s 的数据不存在于任何！丢弃机器人。", player.getProfile().getName()));
+                    onlineMap.remove(uuid);
+                }
+            }
+        } else {  // 玩家
+            try {
+                playerDataMap.get(uuid).timeAdd();
+            } catch (NullPointerException e) {
+                LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在！尝试从机器人数据迁移。", player.getProfile().getName()));
+                try {
+                    PlayerData tmpData = botDataMap.remove(uuid);
+                    tmpData.fakePlayer = false;  // 修改显示从机器人到玩家
+                    playerDataMap.put(uuid, tmpData);
+                    update(player, uuid);
+                } catch (NullPointerException e2) {
+                    LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在于任何！丢弃玩家。", player.getProfile().getName()));
+                    onlineMap.remove(uuid);
+                }
+            }
+        }
+    }
+
     public void report() {
         LogUtils.LOGGER.info("输出统计信息...");
         String result = FamilyReport.getString(playerDataMap, botDataMap);
         LogUtils.LOGGER.info(result);
 
         McBot.sendGroupMsg(result);
-        TimeRecorder.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal(result), false);
+
+        try {
+            if (Utils.isClientPlaying()) {
+                if (Utils.getCLIENT() != null)
+                    Objects.requireNonNull(Utils.getCLIENT().getConnection()).sendChat(result);
+            } else {
+                if (Utils.getSERVER() != null)
+                    Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal(result), false);
+            }
+        } catch (NullPointerException e) {
+            LogUtils.LOGGER.error("在输出统计信息到游戏时遇到了意外。");
+        }
     }
 
     public String getReport() {
@@ -148,11 +238,11 @@ public class StatsData {
         StringBuilder result = new StringBuilder();
         for (PlayerData botData : botDataMap.values()) {
             // bot
-            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getUUID()), botData.isFakePlayer(), botData.isOP())).append('\n');
+            result.append(FamilyReport.getString(botData, onlineMap.get(botData.getUuid()), botData.isFakePlayer(), botData.isOP())).append('\n');
         }
         for (PlayerData playerData : playerDataMap.values()) {
             // player or op
-            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getUUID()), playerData.isFakePlayer(), playerData.isOP())).append('\n');
+            result.append(FamilyReport.getString(playerData, onlineMap.get(playerData.getUuid()), playerData.isFakePlayer(), playerData.isOP())).append('\n');
         }
 
         if (result.isEmpty()) return "";

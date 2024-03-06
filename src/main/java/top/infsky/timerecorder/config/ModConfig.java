@@ -7,7 +7,7 @@ import cn.evole.config.toml.annotation.TableField;
 import lombok.Getter;
 import lombok.Setter;
 import org.tomlj.TomlTable;
-import top.infsky.timerecorder.TimeRecorder;
+import top.infsky.timerecorder.Utils;
 
 /**
  * Description:
@@ -20,7 +20,7 @@ import top.infsky.timerecorder.TimeRecorder;
 @Setter
 public class ModConfig extends AutoReloadToml {
     @Reload(autoReload = true)
-    public static ModConfig INSTANCE = TomlUtil.readConfig(TimeRecorder.CONFIG_FILE, ModConfig.class, true);
+    public static ModConfig INSTANCE = TomlUtil.readConfig(Utils.CONFIG_FILE, ModConfig.class, true);
 
     @TableField(value = "common", topComment = "通用")
     private CommonConfig common = new CommonConfig();
@@ -29,16 +29,16 @@ public class ModConfig extends AutoReloadToml {
 
 
     public ModConfig() {
-        super(null, TimeRecorder.CONFIG_FILE);
+        super(null, Utils.CONFIG_FILE);
     }
 
     public ModConfig(TomlTable source) {
-        super(source, TimeRecorder.CONFIG_FILE);
+        super(source, Utils.CONFIG_FILE);
         this.load(ModConfig.class);
     }
 
     public void save(){
-        TomlUtil.writeConfig(TimeRecorder.CONFIG_FILE,INSTANCE);
+        TomlUtil.writeConfig(Utils.CONFIG_FILE,INSTANCE);
     }
 
 }

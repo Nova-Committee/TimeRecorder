@@ -19,6 +19,8 @@ import java.util.List;
 @Setter
 public class CommonConfig extends AutoLoadTomlConfig {
 
+    @TableField(rightComment = "允许定时输出统计数据")
+    private boolean allowAutoReport = true;
     @TableField(rightComment = "统计数据输出时间(24小时制)")
     private String time = "00:00:00";
     @TableField(rightComment = "允许统计指令")

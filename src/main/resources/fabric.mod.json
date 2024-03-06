@@ -12,10 +12,12 @@
   },
   "license": "GPL-3.0",
   "icon": "assets/timerecorder/icon.png",
-  "environment": "server",
   "entrypoints": {
-    "main": [
+    "server": [
       "top.infsky.timerecorder.TimeRecorder"
+    ],
+    "client": [
+      "top.infsky.timerecorder.TimeRecorderClient"
     ]
   },
   "mixins": [

@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import lombok.val;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
-import top.infsky.timerecorder.TimeRecorder;
+import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
 
@@ -19,7 +19,7 @@ import java.util.*;
 
 public class StatsDump {
     public static int save(final @NotNull JsonObject dump) {
-        Path path = TimeRecorder.CONFIG_FOLDER.resolve("dump.json");
+        Path path = Utils.CONFIG_FOLDER.resolve("dump.json");
         try {
             if (Files.exists(path))
                 Files.delete(path);
@@ -34,7 +34,7 @@ public class StatsDump {
     }
 
     public static int load() throws RuntimeException {
-        Path path = TimeRecorder.CONFIG_FOLDER.resolve("dump.json");
+        Path path = Utils.CONFIG_FOLDER.resolve("dump.json");
         try {
             if (!Files.exists(path)) {
                 LogUtils.LOGGER.error("尝试还原统计数据时遇到异常：文件不存在");
@@ -57,10 +57,10 @@ public class StatsDump {
     public static @NotNull JsonObject getDump(final StatsData stats) {
         JsonObject dump = new JsonObject();
         // 一致性检查
-        if (FabricLoader.getInstance().getModContainer(TimeRecorder.getMOD_ID()).isPresent())
-            dump.addProperty("version", FabricLoader.getInstance().getModContainer(TimeRecorder.getMOD_ID()).get().getMetadata().getVersion().toString());
+        if (FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).isPresent())
+            dump.addProperty("version", FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).get().getMetadata().getVersion().toString());
         else
-            throw new RuntimeException(String.format("模组'%s'意外不存在！联系模组制作者或检查你的模组列表。", TimeRecorder.getMOD_ID()));
+            throw new RuntimeException(String.format("模组'%s'意外不存在！联系模组制作者或检查你的模组列表。", Utils.getMOD_ID()));
         dump.addProperty("hash", stats.REPORT_TIME.hashCode());
         dump.addProperty("time", System.currentTimeMillis());
 
@@ -74,7 +74,7 @@ public class StatsDump {
             PlayerData data = stats.getPlayerDataMap().get(uuid);
             JsonObject singlePlayerData = new JsonObject();
             singlePlayerData.addProperty("name", data.getName());
-            singlePlayerData.addProperty("UUID", data.getUUID().toString());
+            singlePlayerData.addProperty("UUID", data.getUuid().toString());
             singlePlayerData.addProperty("OP", data.isOP());
             singlePlayerData.addProperty("fakePlayer", data.isFakePlayer());
             singlePlayerData.addProperty("playTime", data.getPlayTime());
@@ -90,7 +90,7 @@ public class StatsDump {
             PlayerData data = stats.getBotDataMap().get(uuid);
             JsonObject singleBotData = new JsonObject();
             singleBotData.addProperty("name", data.getName());
-            singleBotData.addProperty("UUID", data.getUUID().toString());
+            singleBotData.addProperty("UUID", data.getUuid().toString());
             singleBotData.addProperty("OP", data.isOP());
             singleBotData.addProperty("fakePlayer", data.isFakePlayer());
             singleBotData.addProperty("playTime", data.getPlayTime());
@@ -114,15 +114,15 @@ public class StatsDump {
         // 一致性检查
         try {
             // mod版本
-            if (FabricLoader.getInstance().getModContainer(TimeRecorder.getMOD_ID()).isPresent()) {
+            if (FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).isPresent()) {
                 if (!dump.get("version").getAsString().equals(
-                        FabricLoader.getInstance().getModContainer(TimeRecorder.getMOD_ID()).get().getMetadata().getVersion().toString()))
+                        FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).get().getMetadata().getVersion().toString()))
                     throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 模组版本错误。");
             } else {
-                throw new RuntimeException(String.format("模组'%s'意外不存在！联系模组制作者或检查你的模组列表。", TimeRecorder.getMOD_ID()));
+                throw new RuntimeException(String.format("模组'%s'意外不存在！联系模组制作者或检查你的模组列表。", Utils.getMOD_ID()));
             }
             // 配置文件哈希
-            if (dump.get("hash").getAsInt() != TimeRecorder.getStatsData().REPORT_TIME.hashCode())
+            if (dump.get("hash").getAsInt() != Utils.getStatsData().REPORT_TIME.hashCode())
                 throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 配置文件错误。");
             // 时间
             val baseReportTime = ModConfig.INSTANCE.getCommon().getTime().split(":");
@@ -177,7 +177,7 @@ public class StatsDump {
                         OPCommandUsed
                 ));
             }
-            TimeRecorder.getStatsData().revert(playerDataMap, botDataMap, onlineMap);
+            Utils.getStatsData().revert(playerDataMap, botDataMap, onlineMap);
         } catch (Exception e) {
             throw new IOException(e);
         }

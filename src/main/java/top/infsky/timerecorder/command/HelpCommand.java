@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.GameRules;
+import top.infsky.timerecorder.Utils;
 
 public class HelpCommand {
     private static final String opHelpMsg = """
@@ -23,6 +24,10 @@ public class HelpCommand {
                 §r/tr report §f- §7显示当日截止目前的统计信息§r
                 """;
     public static int execute(CommandContext<CommandSourceStack> context) {
+        if (Utils.isClient()) {
+            context.getSource().sendSuccess(() -> Component.literal(opHelpMsg), false);
+        }
+
         if (context.getSource().hasPermission(2)) {
             context.getSource().sendSuccess(() -> Component.literal(opHelpMsg), false);
         } else {

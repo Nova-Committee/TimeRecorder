@@ -3,7 +3,7 @@ package top.infsky.timerecorder.command;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import top.infsky.timerecorder.TimeRecorder;
+import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.data.StatsDump;
 import top.infsky.timerecorder.log.LogUtils;
 
@@ -12,7 +12,7 @@ public class DumpCommand {
         public static int execute(CommandContext<CommandSourceStack> context) {
             LogUtils.LOGGER.info("通过指令保存统计数据");
 
-            if (StatsDump.save(StatsDump.getDump(TimeRecorder.getStatsData())) == 1) {
+            if (StatsDump.save(StatsDump.getDump(Utils.getStatsData())) == 1) {
                 context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。"), true);
                 return 1;
             }
