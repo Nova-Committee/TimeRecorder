@@ -21,7 +21,7 @@
 ## 兼容性
 支持**Vanish** Mod：隐身玩家不会被标记为在线，也不会统计它们的在线时间。
 
-支持**Carpet** Mod：通过```/player```召唤的假人会被列入“机器人”。
+支持**Carpet** Mod：通过 ```/player``` 召唤的假人会被列入“机器人”。
 
 ## 如何使用
 从[Github Action](https://github.com/xia-mc/TimeRecorder/actions)获取开发版。
