@@ -29,9 +29,9 @@
 从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取稳定版。
 
 - 安装mod到服务端 **（1.20.1 fabric）**
-- 启动支持```onebot```协议的QQ机器人。
+- 启动支持 ```onebot``` 协议的QQ机器人。
 - 启动服务器，调整配置文件里的设置。
-- 通过```/tr```控制Mod（普通玩家只可使用部分指令）。
+- 通过 ```/tr``` 控制Mod（普通玩家只可使用部分指令）。
 
 ## 贡献
 欢迎提issue或提交pull request。
