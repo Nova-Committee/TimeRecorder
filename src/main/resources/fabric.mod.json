@@ -21,7 +21,8 @@
     ]
   },
   "mixins": [
-    "timerecorder.mixins.json"
+    "timerecorder.mixins.json",
+    "packetevents.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

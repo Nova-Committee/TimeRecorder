@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class CarpetCompat {
     public static final boolean CARPET = FabricLoader.getInstance().isModLoaded("carpet");
@@ -19,7 +20,7 @@ public class CarpetCompat {
         return player instanceof EntityPlayerMPFake;
     }
 
-    public static boolean isFakePlayer(PlayerInfo player) {
+    public static boolean isFakePlayer(@NotNull PlayerInfo player) {
         return player.getProfile().getName().indexOf("bot") == 0;
     }
 }

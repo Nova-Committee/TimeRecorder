@@ -43,7 +43,6 @@ public class CommonConfig extends AutoLoadTomlConfig {
     public CommonConfig(TomlTable source) {
         super(source);
         this.load(CommonConfig.class);
-        init();
     }
 
     private void init() {

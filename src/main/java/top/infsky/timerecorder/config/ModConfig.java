@@ -26,6 +26,8 @@ public class ModConfig extends AutoReloadToml {
     private CommonConfig common = new CommonConfig();
     @TableField(value = "bot_config", topComment = "机器人")
     private BotConfig botConfig = new BotConfig();
+    @TableField(value = "anticheat", topComment = "反作弊(实验性)")
+    private AntiCheatConfig antiCheatConfig = new AntiCheatConfig();
 
 
     public ModConfig() {

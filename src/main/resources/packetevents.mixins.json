@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "top.infsky.timerecorder.packetevents.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "PacketEventsInjectorMixin",
+    "ClientPacketListenerAccessor",
+    "ConnectionAccessor",
+    "ServerGamePacketListenerImplAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

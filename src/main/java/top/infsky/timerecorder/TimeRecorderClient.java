@@ -14,11 +14,13 @@ import top.infsky.timerecorder.command.ICmdEvent;
 import top.infsky.timerecorder.data.StatsData;
 import top.infsky.timerecorder.data.StatsDump;
 import top.infsky.timerecorder.mcbot.McBot;
+import top.infsky.timerecorder.packetevents.PacketEventsMod;
 
 public class TimeRecorderClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         init();
+        PacketEventsMod.onInitializeClient();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ICmdEvent.register(dispatcher));
 
