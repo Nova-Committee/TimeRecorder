@@ -1,13 +1,16 @@
 package top.infsky.timerecorder;
 
 import cn.evole.onebot.sdk.util.FileUtils;
+import com.github.retrooper.packetevents.PacketEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
+import top.infsky.timerecorder.anticheat.CheckManager;
 import top.infsky.timerecorder.command.ICmdEvent;
+import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.StatsData;
 import top.infsky.timerecorder.data.StatsDump;
 import top.infsky.timerecorder.mcbot.McBot;
@@ -19,6 +22,8 @@ public class TimeRecorder implements ModInitializer {
         init();
         PacketEventsMod.onPreLaunch();
         PacketEventsMod.onInitialize();
+        if (ModConfig.INSTANCE.getAntiCheatConfig().isEnable())
+            antiCheatInit();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ICmdEvent.register(dispatcher));
 
@@ -53,5 +58,9 @@ public class TimeRecorder implements ModInitializer {
     }
     public void onServerStopped(MinecraftServer server) {
         McBot.killOutThreads();
+    }
+
+    public void antiCheatInit() {
+        PacketEvents.getAPI().getEventManager().registerListener(new CheckManager());
     }
 }

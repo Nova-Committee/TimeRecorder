@@ -8,7 +8,7 @@ public class ChannelUtilities {
         boolean containsSplitter = false;
         boolean containsPrepender = false;
         for(var handler : pipeline) {
-            PacketEventsMod.LOGGER.info(handler.getClass().getName());
+            PacketEventsMod.LOGGER.debug(handler.getClass().getName());
             if(handler.getKey().equals("splitter")) {
                 containsSplitter = true;
             }

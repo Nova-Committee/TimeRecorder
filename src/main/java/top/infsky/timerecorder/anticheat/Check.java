@@ -7,19 +7,18 @@ import top.infsky.timerecorder.log.LogUtils;
 
 public class Check implements PacketListener {
     protected final TRPlayer player;
-    private String checkName;
+    private final String checkName;
     public double VL;
 
-    public Check(TRPlayer player) {
+    public Check(TRPlayer player, String checkName) {
         this.player = player;
+        this.checkName = checkName;
     }
 
-    public final boolean flag() {
+    public final void flag() {
         if (silentFlag()) {
             alert("");
-            return true;
         }
-        return false;
     }
 
     public final boolean flag(String message) {
@@ -31,7 +30,7 @@ public class Check implements PacketListener {
     }
 
     public final boolean silentFlag() {
-        if (!player.disabled && ModConfig.INSTANCE.getAntiCheatConfig().isAntiCheat()) {
+        if (!player.disabled && ModConfig.INSTANCE.getAntiCheatConfig().isEnable()) {
             VL++;
             return true;
         }

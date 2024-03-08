@@ -15,6 +15,7 @@ import top.infsky.timerecorder.mcbot.McBot;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -101,6 +102,9 @@ public class StatsData {
             LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在！丢弃玩家。", player.getName()), e);
             onlineMap.remove(uuid);
         }
+        try {
+            if (ModConfig.INSTANCE.getAntiCheatConfig().isEnable()) Objects.requireNonNull(playerDataMap.get(uuid).getTrPlayer()).update();
+        } catch (NullPointerException ignored) {}
     }
 
     public void report() {

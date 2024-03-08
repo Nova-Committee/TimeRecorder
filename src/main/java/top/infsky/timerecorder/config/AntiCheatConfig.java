@@ -10,7 +10,7 @@ import org.tomlj.TomlTable;
 @Setter
 public class AntiCheatConfig extends AutoLoadTomlConfig {
     @TableField(rightComment = "启用反作弊")
-    private boolean AntiCheat = false;
+    private boolean enable = false;
 
     public AntiCheatConfig() {
         super(null);
