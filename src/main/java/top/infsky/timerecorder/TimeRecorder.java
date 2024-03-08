@@ -1,7 +1,7 @@
 package top.infsky.timerecorder;
 
 import cn.evole.onebot.sdk.util.FileUtils;
-import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -13,9 +13,9 @@ import top.infsky.timerecorder.data.StatsDump;
 import top.infsky.timerecorder.mcbot.McBot;
 import top.infsky.timerecorder.packetevents.PacketEventsMod;
 
-public class TimeRecorder implements DedicatedServerModInitializer {
+public class TimeRecorder implements ModInitializer {
     @Override
-    public void onInitializeServer() {
+    public void onInitialize() {
         init();
         PacketEventsMod.onPreLaunch();
         PacketEventsMod.onInitialize();

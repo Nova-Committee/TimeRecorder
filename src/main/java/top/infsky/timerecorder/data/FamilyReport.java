@@ -8,9 +8,17 @@ import top.infsky.timerecorder.log.LogUtils;
 import java.util.*;
 
 public class FamilyReport {
-    public static String getString(Map<UUID, PlayerData> playerData, Map<UUID, PlayerData> botData) {
-        val longestOnlinePlayer = getLongestOnlinePlayer(playerData, botData, false);
-        val longestOnlineBot = getLongestOnlinePlayer(playerData, botData, true);
+    public static String getString(Map<UUID, PlayerData> dataMap) {
+        // 转换（从旧代码迁移）
+        Map<UUID, PlayerData> playerData = new HashMap<>();
+        Map<UUID, PlayerData> botData = new HashMap<>();
+        dataMap.forEach((uuid, data) -> {
+            if (data.isFakePlayer()) botData.put(uuid, data);
+            else playerData.put(uuid, data);
+        });
+
+        val longestOnlinePlayer = getLongestOnlinePlayer(dataMap, false);
+        val longestOnlineBot = getLongestOnlinePlayer(dataMap, true);
         return String.format(
                 """
                 ----------服务器日报----------
@@ -27,7 +35,7 @@ public class FamilyReport {
                 (Long) longestOnlinePlayer.get(1) < 1200 ? (Long) longestOnlinePlayer.get(1) / 20 + "秒" : (Long) longestOnlinePlayer.get(1) / 1200 + "分钟",
                 longestOnlineBot.get(0),
                 (Long) longestOnlineBot.get(1) < 1200 ? (Long) longestOnlineBot.get(1) / 20 + "秒" : (Long) longestOnlineBot.get(1) / 1200 + "分钟",
-                getOnlinePlayerList(playerData, botData)
+                getOnlinePlayerList(playerData)
         );
     }
 
@@ -46,17 +54,11 @@ public class FamilyReport {
         );
     }
 
-    public static @NotNull @Unmodifiable List<Object> getLongestOnlinePlayer(@NotNull Map<UUID, PlayerData> playerData, Map<UUID, PlayerData> botData, boolean isFakePlayer) {
+    public static @NotNull @Unmodifiable List<Object> getLongestOnlinePlayer(@NotNull Map<UUID, PlayerData> dataMap, boolean isFakePlayer) {
         String name = null;
         long maxTime = 0;
 
-        for (PlayerData data : playerData.values()) {
-            if (data.getPlayTime() > maxTime && data.isFakePlayer() == isFakePlayer) {
-                name = data.getName();
-                maxTime = data.getPlayTime();
-            }
-        }
-        for (PlayerData data : botData.values()) {
+        for (PlayerData data : dataMap.values()) {
             if (data.getPlayTime() > maxTime && data.isFakePlayer() == isFakePlayer) {
                 name = data.getName();
                 maxTime = data.getPlayTime();
@@ -91,15 +93,10 @@ public class FamilyReport {
         return back.toString();
     }
 
-    public static @NotNull String getOnlinePlayerList(@NotNull Map<UUID, PlayerData> playerDataMap, Map<UUID, PlayerData> botDataMap) {
+    public static @NotNull String getOnlinePlayerList(@NotNull Map<UUID, PlayerData> playerDataMap) {
         StringBuilder back = new StringBuilder();
         for (PlayerData player : playerDataMap.values()) {
-            if (!player.isFakePlayer())
-                back.append("   ").append(player.getName()).append("\n");
-        }
-        for (PlayerData player : botDataMap.values()) {
-            if (!player.isFakePlayer())
-                back.append("   ").append(player.getName()).append("\n");
+            back.append("   ").append(player.getName()).append("\n");
         }
 
         if (back.isEmpty()) return "   无";

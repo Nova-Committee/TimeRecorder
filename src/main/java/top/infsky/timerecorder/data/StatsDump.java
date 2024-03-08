@@ -85,22 +85,6 @@ public class StatsDump {
         }
         dump.add("playerDataMap", playerDataMap);
 
-        JsonObject botDataMap = new JsonObject();
-        for (UUID uuid : stats.getBotDataMap().keySet()) {
-            PlayerData data = stats.getBotDataMap().get(uuid);
-            JsonObject singleBotData = new JsonObject();
-            singleBotData.addProperty("name", data.getName());
-            singleBotData.addProperty("UUID", data.getUuid().toString());
-            singleBotData.addProperty("OP", data.isOP());
-            singleBotData.addProperty("fakePlayer", data.isFakePlayer());
-            singleBotData.addProperty("playTime", data.getPlayTime());
-            JsonArray OPCommandUsed = new JsonArray();
-            data.getOPCommandUsed().forEach(OPCommandUsed::add);
-            singleBotData.add("OPCommandUsed", OPCommandUsed);  // from list to json element.
-            botDataMap.add(uuid.toString(), singleBotData);
-        }
-        dump.add("botDataMap", botDataMap);
-
         return dump;
     }
 
@@ -162,22 +146,7 @@ public class StatsDump {
                 ));
             }
 
-            // botDataMap
-            HashMap<UUID, PlayerData> botDataMap = new HashMap<>();
-            for (Map.Entry<String, JsonElement> entry : dump.get("botDataMap").getAsJsonObject().entrySet()) {
-                JsonObject singlePlayerData = entry.getValue().getAsJsonObject();
-                List<String> OPCommandUsed = new LinkedList<>();
-                singlePlayerData.get("OPCommandUsed").getAsJsonArray().asList().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
-                botDataMap.put(UUID.fromString(entry.getKey()), new PlayerData(
-                        singlePlayerData.get("name").getAsString(),
-                        UUID.fromString(singlePlayerData.get("UUID").getAsString()),
-                        singlePlayerData.get("OP").getAsBoolean(),
-                        singlePlayerData.get("fakePlayer").getAsBoolean(),
-                        singlePlayerData.get("playTime").getAsLong(),
-                        OPCommandUsed
-                ));
-            }
-            Utils.getStatsData().revert(playerDataMap, botDataMap, onlineMap);
+            Utils.getStatsData().revert(playerDataMap, onlineMap);
         } catch (Exception e) {
             throw new IOException(e);
         }
