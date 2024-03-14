@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Name: McBot-fabric / CommonConfig
+ * Name: McBotSupport-fabric / CommonConfig
  * Author: cnlimiter
  * CreateTime: 2023/11/7 20:24
  * Description:

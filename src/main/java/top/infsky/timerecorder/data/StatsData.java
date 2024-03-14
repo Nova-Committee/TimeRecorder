@@ -10,12 +10,11 @@ import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.compat.VanishAPI;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
-import top.infsky.timerecorder.mcbot.McBot;
+import top.infsky.timerecorder.mcbot.McBotSupport;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -35,7 +34,8 @@ public class StatsData {
      */
     public StatsData() {
         init();
-        reset();
+        onlineMap = new HashMap<>();
+        playerDataMap = new HashMap<>();
     }
 
     /**
@@ -102,9 +102,6 @@ public class StatsData {
             LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在！丢弃玩家。", player.getName()), e);
             onlineMap.remove(uuid);
         }
-        try {
-            if (ModConfig.INSTANCE.getAntiCheatConfig().isEnable()) Objects.requireNonNull(playerDataMap.get(uuid).getTrPlayer()).update();
-        } catch (NullPointerException ignored) {}
     }
 
     public void report() {
@@ -112,7 +109,8 @@ public class StatsData {
         String result = FamilyReport.getString(playerDataMap);
         LogUtils.LOGGER.info(result);
 
-        McBot.sendGroupMsg(result);
+        McBotSupport.sendGroupMsg(result);
+        StatsDump.save(StatsDump.getDump(this));
 
         try {
             if (Utils.getSERVER() != null)
@@ -140,7 +138,7 @@ public class StatsData {
 
     public void reset() {
         LogUtils.LOGGER.info("重置统计信息...");
-        playerDataMap = new HashMap<>();
-        onlineMap = new HashMap<>();
+        playerDataMap.clear();
+        onlineMap.clear();
     }
 }

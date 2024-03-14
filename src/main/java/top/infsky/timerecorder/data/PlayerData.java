@@ -4,8 +4,6 @@ import lombok.Getter;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
-import top.infsky.timerecorder.anticheat.CheckManager;
-import top.infsky.timerecorder.anticheat.TRPlayer;
 import top.infsky.timerecorder.log.LogUtils;
 
 import java.util.LinkedList;
@@ -19,12 +17,6 @@ public class PlayerData {
      */
     @Nullable
     public Player player;  // 玩家
-
-    @Nullable
-    public TRPlayer trPlayer;  // 反作弊模块(玩家)
-
-    @Nullable
-    public CheckManager checkManager;  // 反作弊模块(玩家的检查)
 
     public String name;  // 名字
 

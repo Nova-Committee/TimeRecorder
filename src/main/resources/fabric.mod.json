@@ -19,13 +19,13 @@
     ]
   },
   "mixins": [
-    "timerecorder.mixins.json",
-    "packetevents.mixins.json"
+    "timerecorder.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "~${minecraft_version}",
-    "java": ">=17"
+    "java": ">=17",
+    "mcbot_1_20_1": ">=2.2.1.1"
   }
 }

@@ -13,7 +13,6 @@ public class HelpCommand {
                 §r/tr report §f- §7显示当日截止目前的统计信息§r
                 §r/tr reportQQ §f- §7显示和发送当日截止目前的统计信息到QQ§r
                 §r/tr reportAll §f- §7显示当日截止目前的所有玩家的统计信息§r
-                §r/tr connect §f- §7连接到QQ机器人§r
                 §r/tr reload §f- §7从配置文件重载§r
                 §r/tr dump §f- §7保存/还原统计信息§r
                 """;

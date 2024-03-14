@@ -1,12 +1,10 @@
 package top.infsky.timerecorder.data;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import lombok.val;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
@@ -18,13 +16,27 @@ import java.util.*;
 
 
 public class StatsDump {
+    public static @NotNull Path getLatestDump() throws IOException {
+        Path indexPath = Utils.CONFIG_FOLDER.resolve("index.json");
+        JsonObject indexFile = new Gson().fromJson(Files.readString(indexPath), JsonObject.class);
+        return Utils.CONFIG_FOLDER.resolve(indexFile.get("latest").getAsString());
+    }
+
     public static int save(final @NotNull JsonObject dump) {
-        Path path = Utils.CONFIG_FOLDER.resolve("dump.json");
+        String fileName = String.format("dump-%s.json", System.currentTimeMillis());
+        Path dumpPath = Utils.CONFIG_FOLDER.resolve(fileName);
+        Path indexPath = Utils.CONFIG_FOLDER.resolve("index.json");
         try {
-            if (Files.exists(path))
-                Files.delete(path);
-            Files.createFile(path);
-            Files.write(path, dump.toString().getBytes());
+            if (Files.exists(dumpPath))
+                Files.delete(dumpPath);
+            Files.createFile(dumpPath);
+            Files.write(dumpPath, dump.toString().getBytes());
+
+            if (!Files.exists(indexPath))
+                Files.createFile(indexPath);
+            JsonObject indexFile = new JsonObject();
+            indexFile.addProperty("latest", fileName);
+            Files.write(indexPath, indexFile.toString().getBytes());
         } catch (IOException e) {
             LogUtils.LOGGER.error("尝试dump统计数据时遇到异常");
             LogUtils.LOGGER.error(e.getMessage());
@@ -34,8 +46,8 @@ public class StatsDump {
     }
 
     public static int load() throws RuntimeException {
-        Path path = Utils.CONFIG_FOLDER.resolve("dump.json");
         try {
+            Path path = getLatestDump();
             if (!Files.exists(path)) {
                 LogUtils.LOGGER.error("尝试还原统计数据时遇到异常：文件不存在");
                 throw new RuntimeException("文件不存在！");

@@ -11,9 +11,6 @@ public class ICmdEvent {
                 .executes(HelpCommand::execute)
                         .then(literal("help")  // 显示帮助信息
                                 .executes(HelpCommand::execute))
-                        .then(literal("connect")  // 连接QQ机器人
-                                .requires(source -> source.hasPermission(2))
-                                .executes(ConnectCommand::execute))
                         .then(literal("reload")  // 热重载
                                 .requires(source -> source.hasPermission(2))
                                 .executes(ReloadCommand::execute))

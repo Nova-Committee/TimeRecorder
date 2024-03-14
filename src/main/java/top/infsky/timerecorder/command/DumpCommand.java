@@ -33,6 +33,7 @@ public class DumpCommand {
                 context.getSource().sendFailure(Component.literal(e.getMessage()));
                 return -1;
             }
+            context.getSource().sendFailure(Component.literal("统计数据还原失败"));
             return -1;
         }
     }
