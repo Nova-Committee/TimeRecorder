@@ -42,7 +42,7 @@ public class PlayerData {
         OPCommandUsed = new LinkedList<>();
 
         if (name.equals("Hatsuki")) {
-            player.sendSystemMessage(Component.literal("§7§oxia__mc悄悄对你说：你好，Hatsuki..."));
+            player.sendSystemMessage(Component.literal("§7§oxia__mc悄悄对你说：你好，Hatsuki..."));  // 😭😭😭
         }
     }
 
