@@ -2,6 +2,8 @@ package top.infsky.timerecorder.data;
 
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
@@ -42,8 +44,10 @@ public class PlayerData {
         playTime = 0;
         OPCommandUsed = new LinkedList<>();
 
-        if (name.equals("Hatsuki")) {
-            player.sendSystemMessage(Component.literal("§7§oxia__mc悄悄对你说：你好，Hatsuki..."));  // 😭😭😭
+        // TODO 下个版本应移除
+        if (name.equals("Hatsuki")) {  // 😭😭😭
+            player.sendSystemMessage(Component.literal("§b§lHatsuki，欢迎回来。"));
+            player.playSound(SoundEvent.createVariableRangeEvent(new ResourceLocation("entity.experience_orb.pickup")));
         }
     }
 

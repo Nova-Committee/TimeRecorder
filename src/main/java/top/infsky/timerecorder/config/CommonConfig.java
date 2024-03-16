@@ -27,6 +27,8 @@ public class CommonConfig extends AutoLoadTomlConfig {
     private boolean allowCommandStats = true;
     @TableField(rightComment = "统计指令列表")
     private List<String> commandStatsList = new ArrayList<>();
+    @TableField(rightComment = "允许定时消息")
+    private boolean allowGoodMorning = true;
 
     @TableField(rightComment = "开启Q群功能")
     private boolean groupOn = true;

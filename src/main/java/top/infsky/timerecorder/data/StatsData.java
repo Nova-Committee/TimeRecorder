@@ -5,6 +5,7 @@ import lombok.val;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.compat.VanishAPI;
@@ -15,6 +16,7 @@ import top.infsky.timerecorder.compat.McBotSupport;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -80,6 +82,20 @@ public class StatsData {
             }
         }
 
+        // 早安
+        if (ModConfig.INSTANCE.getCommon().isAllowGoodMorning())
+            try {
+                switch ((short) Objects.requireNonNull(Utils.getSERVER().getLevel(Level.OVERWORLD)).getDayTime()) {
+                    case 0 -> Utils.getSERVER().sendSystemMessage(Component.literal("§b§l早安世界！新的一天开始了！"));
+                    case 6000 -> Utils.getSERVER().sendSystemMessage(Component.literal("§b§l中午好！今天也辛苦了。"));
+                    case 18000 -> Utils.getSERVER().sendSystemMessage(Component.literal("§b§l熬夜也许不是好习惯？"));
+                }
+            } catch (NullPointerException e) {
+                LogUtils.LOGGER.error("主世界意外不存在！");
+            }
+
+
+        // 检查报告时间
         if (ModConfig.INSTANCE.getCommon().isAllowAutoReport()) {
             if (isReported()) {
                 if (LocalDate.now().isEqual(NextDay)) Reported = false;
