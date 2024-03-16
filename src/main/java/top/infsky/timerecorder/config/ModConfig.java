@@ -37,6 +37,10 @@ public class ModConfig extends AutoReloadToml {
         this.load(ModConfig.class);
     }
 
+    public static void init() {
+        INSTANCE.common.init();
+    }
+    @Override
     public void save(){
         TomlUtil.writeConfig(Utils.CONFIG_FILE,INSTANCE);
     }

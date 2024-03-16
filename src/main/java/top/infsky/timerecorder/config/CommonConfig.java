@@ -37,7 +37,6 @@ public class CommonConfig extends AutoLoadTomlConfig {
 
     public CommonConfig() {
         super(null);
-        init();
     }
 
     public CommonConfig(TomlTable source) {
@@ -45,7 +44,7 @@ public class CommonConfig extends AutoLoadTomlConfig {
         this.load(CommonConfig.class);
     }
 
-    private void init() {
+    public void init() {
         commandStatsList.add("gamemode");
         commandStatsList.add("tp");
     }

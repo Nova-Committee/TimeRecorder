@@ -1,4 +1,4 @@
-package top.infsky.timerecorder.mcbot;
+package top.infsky.timerecorder.compat;
 
 import cn.evole.mods.mcbot.Const;
 import top.infsky.timerecorder.config.ModConfig;

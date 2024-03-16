@@ -5,7 +5,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.log.LogUtils;
-import top.infsky.timerecorder.mcbot.McBotSupport;
+import top.infsky.timerecorder.compat.McBotSupport;
 
 public class ReportQQCommand {
     public static int execute(CommandContext<CommandSourceStack> context) {

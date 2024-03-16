@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import top.infsky.timerecorder.command.ICmdEvent;
+import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.StatsData;
 import top.infsky.timerecorder.data.StatsDump;
 
@@ -32,6 +33,7 @@ public class TimeRecorder implements ModInitializer {
         if (!Utils.CONFIG_FOLDER.toFile().isDirectory()) {
             try {
                 Files.createDirectories(Utils.CONFIG_FOLDER);
+                ModConfig.init();
             } catch (IOException ignored) {}
         }
         Utils.CONFIG_FILE = Utils.CONFIG_FOLDER.resolve("config.toml");

@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
+import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.log.LogUtils;
 
 import java.util.LinkedList;
@@ -66,6 +67,7 @@ public class PlayerData {
     }
 
     public void playerBuilder() {
+        if (player != null) return;
         try {
             if (Utils.getSERVER() != null) {
                 player = Utils.getSERVER().getPlayerList().getPlayer(uuid);
@@ -78,9 +80,14 @@ public class PlayerData {
     }
 
     /**
-     * 玩家在服务器又待了1tick
+     * 更新该玩家的数据（每tick）
      */
-    public void timeAdd() {
+    public void update() {
+        playerBuilder();
+        if (player == null) return;
+
+        OP = player.hasPermissions(2);
+        if (fakePlayer) fakePlayer = CarpetCompat.isFakePlayer(player);
         playTime += 1;
     }
 

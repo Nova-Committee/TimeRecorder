@@ -10,7 +10,7 @@ import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.compat.VanishAPI;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
-import top.infsky.timerecorder.mcbot.McBotSupport;
+import top.infsky.timerecorder.compat.McBotSupport;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -97,7 +97,7 @@ public class StatsData {
     private void update(Player player, UUID uuid) {
         onlineMap.replace(uuid, true);
         try {
-            playerDataMap.get(uuid).timeAdd();
+            playerDataMap.get(uuid).update();
         } catch (NullPointerException e) {
             LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在！丢弃玩家。", player.getName()), e);
             onlineMap.remove(uuid);
