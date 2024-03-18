@@ -34,12 +34,13 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation include ("cn.evole.config:AtomConfig-Toml:${project.toml_version}"){transitive = false}
+    compileOnly ("cn.evole.config:AtomConfig-Toml:${project.toml_version}"){transitive = false}
     compileOnly ("org.projectlombok:lombok:1.18.24")
     modCompileOnly ("maven.modrinth:vanish:1.5.2-1.20.1")
     modCompileOnly ("maven.modrinth:carpet:1.4.112-1.20.1")
 //    modCompileOnly ("com.github.Nova-Committee:McBot:v2.2.1.1-fix2-fabric")
     modCompileOnly files( "McBot-fabric-1.20.1-${mcbot_version}.jar" )
+    compileOnly("cn.evole.onebot:OneBot-SDK:${onebot_sdk_version}")
     annotationProcessor ("org.projectlombok:lombok:1.18.24")
 }
 

@@ -5,14 +5,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.compat.CarpetCompat;
+import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class PlayerData {
@@ -34,7 +34,9 @@ public class PlayerData {
 
     public List<String> OPCommandUsed;  // 当天使用OP指令的列表
 
-    public PlayerData(Player gamePlayer, boolean isFakePlayer) {
+    public Deque<Integer> MessageSent;  // 玩家的消息历史
+
+    public PlayerData(@NotNull Player gamePlayer, boolean isFakePlayer) {
         LogUtils.LOGGER.debug(String.format("初始化玩家数据: %s", gamePlayer.getName().getString()));
         player = gamePlayer;
         name = player.getName().getString();
@@ -43,6 +45,7 @@ public class PlayerData {
         fakePlayer = isFakePlayer;
         playTime = 0;
         OPCommandUsed = new LinkedList<>();
+        MessageSent = new ArrayDeque<>();
 
         // TODO 下个版本应移除
         if (name.equals("Hatsuki")) {  // 😭😭😭
@@ -67,6 +70,7 @@ public class PlayerData {
         this.fakePlayer = fakePlayer;
         this.playTime = playTime;
         this.OPCommandUsed = OPCommandUsed;
+        this.MessageSent = new ArrayDeque<>();
         playerBuilder();
     }
 
@@ -93,6 +97,15 @@ public class PlayerData {
         OP = player.hasPermissions(2);
         if (fakePlayer) fakePlayer = CarpetCompat.isFakePlayer(player);
         playTime += 1;
+    }
+
+    /**
+     * 该玩家发送了一条聊天
+     */
+    public void onChat(int messageId) {
+        if (MessageSent.size() > ModConfig.INSTANCE.getCommon().getMaxMessageHistory())
+            MessageSent.remove();
+        MessageSent.add(messageId);
     }
 
     /**

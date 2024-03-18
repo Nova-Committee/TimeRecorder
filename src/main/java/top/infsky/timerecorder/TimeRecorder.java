@@ -1,5 +1,6 @@
 package top.infsky.timerecorder;
 
+import cn.evole.mods.mcbot.api.McBotChatEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -33,7 +34,6 @@ public class TimeRecorder implements ModInitializer {
         if (!Utils.CONFIG_FOLDER.toFile().isDirectory()) {
             try {
                 Files.createDirectories(Utils.CONFIG_FOLDER);
-                ModConfig.init();
             } catch (IOException ignored) {}
         }
         Utils.CONFIG_FILE = Utils.CONFIG_FOLDER.resolve("config.toml");
@@ -44,9 +44,11 @@ public class TimeRecorder implements ModInitializer {
     }
 
     public void onServerStarted(MinecraftServer server) {
+        ModConfig.INSTANCE.save();
         Utils.statsData = new StatsData();
 
         ServerTickEvents.END_SERVER_TICK.register(Utils.statsData::update);
+        McBotChatEvents.ON_CHAT.register(Utils.statsData::onChat);
     }
 
     public void onServerStopping(MinecraftServer server) {

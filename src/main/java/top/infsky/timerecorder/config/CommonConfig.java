@@ -33,9 +33,11 @@ public class CommonConfig extends AutoLoadTomlConfig {
     @TableField(rightComment = "开启Q群功能")
     private boolean groupOn = true;
     @TableField(rightComment = "Q群列表")
-    private List<Long> groupIdList = new ArrayList<>();//支持多个q群
+    private List<Long> groupIdList = new ArrayList<>();  // 支持多个q群
     @TableField(rightComment = "机器人qq")
-    private long botId = 0;//机器人qq
+    private long botId = 0;  // 机器人qq
+    @TableField(rightComment = "消息记录上限")
+    private long maxMessageHistory = 10;  // 目前用于撤回
 
     public CommonConfig() {
         super(null);

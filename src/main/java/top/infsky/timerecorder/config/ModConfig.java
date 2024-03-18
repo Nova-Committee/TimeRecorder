@@ -30,6 +30,7 @@ public class ModConfig extends AutoReloadToml {
 
     public ModConfig() {
         super(null, Utils.CONFIG_FILE);
+        init();
     }
 
     public ModConfig(TomlTable source) {

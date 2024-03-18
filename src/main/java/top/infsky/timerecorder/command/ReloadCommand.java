@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import top.infsky.timerecorder.Utils;
+import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
 
 import java.util.Arrays;
@@ -13,6 +14,7 @@ public class ReloadCommand {
         LogUtils.LOGGER.info("通过指令重载配置文件");
         try {
             Utils.getStatsData().init();
+            ModConfig.INSTANCE.save();
         } catch (Exception e) {
             LogUtils.LOGGER.error("在重载配置文件时发生异常");
             LogUtils.LOGGER.error(Arrays.toString(e.getStackTrace()));

@@ -28,6 +28,9 @@ public class ICmdEvent {
                         .then(literal("reportqq")  // 对所有人显示和发送当日截止目前的统计信息到QQ
                                 .requires(source -> source.hasPermission(2))
                                 .executes(ReportQQCommand::execute))
+                        .then(literal("recall")
+                                .executes(RecallCommand::execute)  // 撤回上一条消息
+                )
         );
     }
 }

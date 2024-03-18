@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.val;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.compat.VanishAPI;
@@ -60,6 +62,11 @@ public class StatsData {
         NextDay = LocalDate.now().plusDays(1);
     }
 
+    public void onChat(@NotNull ServerPlayer player, int messageId) {
+        if (!onlineMap.containsKey(player.getUUID())) return;
+        playerDataMap.get(player.getUUID()).onChat(messageId);
+    }
+
     /**
      * 每tick更新玩家统计信息
      * @param ignoredServer 传null也不是不行
@@ -86,9 +93,9 @@ public class StatsData {
         if (ModConfig.INSTANCE.getCommon().isAllowGoodMorning())
             try {
                 switch ((short) Objects.requireNonNull(Utils.getSERVER().getLevel(Level.OVERWORLD)).getDayTime()) {
-                    case 0 -> Utils.getSERVER().sendSystemMessage(Component.literal("§b§l早安世界！新的一天开始了！"));
-                    case 6000 -> Utils.getSERVER().sendSystemMessage(Component.literal("§b§l中午好！今天也辛苦了。"));
-                    case 18000 -> Utils.getSERVER().sendSystemMessage(Component.literal("§b§l熬夜也许不是好习惯？"));
+                    case 1 -> Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal("§b§l早安世界！新的一天开始了！"), false);
+                    case 6001 -> Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal("§b§l中午好！今天也辛苦了。"), false);
+                    case 18001 -> Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal("§b§l熬夜也许不是好习惯？"), false);
                 }
             } catch (NullPointerException e) {
                 LogUtils.LOGGER.error("主世界意外不存在！");
