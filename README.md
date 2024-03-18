@@ -4,7 +4,7 @@
 # 光阴：莉拉提娅
 一个服务端模组，允许您统计服务器的一些信息。
 
-从[`Release 1.0.0`](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)开始，本mod依赖[McBot](https://github.com/Nova-Committee/McBot)运行。
+从[`Release 1.0.0`](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)开始，本Mod是[McBot](https://github.com/Nova-Committee/McBot)的附属Mod。
 </div>
 
 ## 它可以做什么
