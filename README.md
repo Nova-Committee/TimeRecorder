@@ -1,10 +1,10 @@
 <div align="center">
-  <img width="256" src="https://github.com/xia-mc/TimeRecorder/assets/108219418/d655c66e-c3a7-4f8e-aa2f-13f14b0b36a6" alt="logo">
+  <img width="512" src="https://github.com/xia-mc/TimeRecorder/assets/108219418/d655c66e-c3a7-4f8e-aa2f-13f14b0b36a6" alt="logo">
 
 # 光阴：莉拉提娅
 一个服务端模组，允许您统计服务器的一些信息。
 
-从`Release 1.0.0`开始，本mod依赖McBot运行。
+从`[Release 1.0.0](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)`开始，本mod依赖[McBot](https://github.com/Nova-Committee/McBot)运行。
 </div>
 
 ## 它可以做什么
@@ -38,6 +38,6 @@
 ## 贡献
 欢迎提issue或提交pull request。
 
-## 使用项目
+## 相关项目
 - [OneBot Client](https://github.com/cnlimiter/onebot-client)
 - [AtomConfig Toml](https://github.com/TheRandomLabs/AutoConfig-TOML)
