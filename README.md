@@ -2,10 +2,6 @@
   <img width="512" src="https://github.com/xia-mc/TimeRecorder/assets/108219418/d655c66e-c3a7-4f8e-aa2f-13f14b0b36a6" alt="logo">
 
 # 光阴：莉拉提娅
-一个服务端模组，允许您统计服务器的一些信息。
-
-从[`Release 1.0.0`](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)开始，本Mod是[McBot](https://github.com/Nova-Committee/McBot)的附属Mod。
-</div>
 <p align="center">
     <a href="https://github.com/Nova-Committee/TimeRecorder/issues">
       <img src="https://img.shields.io/github/issues/Nova-Committee/TimeRecorder?style=flat" alt="issues" />
@@ -17,7 +13,13 @@
     <a href="https://github.com/Nova-Committee/TimeRecorder/actions/workflows/gradle.yml">
       <img src="https://github.com/Nova-Committee/TimeRecorder/actions/workflows/gradle.yml/badge.svg">
     </a>  
-</p>  
+</p>
+
+一个服务端模组，允许您统计服务器的一些信息。
+
+从[`Release 1.0.0`](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)开始，本Mod是[McBot](https://github.com/Nova-Committee/McBot)的附属Mod。
+</div>
+
 ## 亮点
 ```
 ----------服务器日报----------
