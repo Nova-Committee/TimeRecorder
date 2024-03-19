@@ -7,7 +7,7 @@
 从[`Release 1.0.0`](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)开始，本Mod是[McBot](https://github.com/Nova-Committee/McBot)的附属Mod。
 </div>
 
-## 它可以做什么
+## 亮点
 ```
 ----------服务器日报----------
  玩家日活：2 | 机器人日活：1
@@ -62,9 +62,9 @@
 支持**Carpet** Mod：通过 ```/player``` 召唤的假人会被列入“机器人”。
 
 ## 如何使用
-从[Github Action](https://github.com/xia-mc/TimeRecorder/actions)获取开发版。
+从[Github Action](https://github.com/xia-mc/TimeRecorder/actions)获取开发版。 **(需要最新开发版McBot)**
 
-从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取稳定版。
+从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取正式版。 **(需要最新正式版McBot)**
 
 - 安装mod到服务端 **（1.20.1 fabric）**
 - 启动支持 ```onebot``` 协议的QQ机器人。
@@ -75,5 +75,5 @@
 欢迎提issue或提交pull request。
 
 ## 相关项目
-- [OneBot Client](https://github.com/cnlimiter/onebot-client)
-- [AtomConfig Toml](https://github.com/TheRandomLabs/AutoConfig-TOML)
+- [McBot](https://github.com/Nova-Committee/McBot)
+- [AutoConfig Toml](https://github.com/TheRandomLabs/AutoConfig-TOML)
