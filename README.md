@@ -6,7 +6,18 @@
 
 从[`Release 1.0.0`](https://github.com/xia-mc/TimeRecorder/releases/tag/1.0.0)开始，本Mod是[McBot](https://github.com/Nova-Committee/McBot)的附属Mod。
 </div>
-
+<p align="center">
+    <a href="https://github.com/Nova-Committee/TimeRecorder/issues">
+      <img src="https://img.shields.io/github/issues/Nova-Committee/TimeRecorder?style=flat" alt="issues" />
+    </a>
+    <a href="https://www.curseforge.com/minecraft/mc-mods/TimeRecorder">
+      <img src="http://cf.way2muchnoise.eu/timerecorder.svg" alt="CurseForge Download">
+    </a>
+    <img src="https://img.shields.io/badge/license-GPLV3-green" alt="License">
+    <a href="https://github.com/Nova-Committee/TimeRecorder/actions/workflows/gradle.yml">
+      <img src="https://github.com/Nova-Committee/TimeRecorder/actions/workflows/gradle.yml/badge.svg">
+    </a>  
+</p>  
 ## 亮点
 ```
 ----------服务器日报----------
