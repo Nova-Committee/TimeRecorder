@@ -66,7 +66,7 @@
 
 从[Github Release](https://github.com/xia-mc/TimeRecorder/releases)获取正式版。 **(需要最新正式版McBot)**
 
-- 安装mod到服务端 **（1.20.1 fabric）**
+- 安装mod到服务端 **（Fabric）**
 - 启动服务器，调整配置文件里的设置。
 - 通过 ```/tr``` 控制Mod（普通玩家只可使用部分指令）。
 
