@@ -13,6 +13,7 @@ import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 
 @Getter
 public class PlayerData {
@@ -34,7 +35,7 @@ public class PlayerData {
 
     public List<String> OPCommandUsed;  // 当天使用OP指令的列表
 
-    public Deque<Integer> MessageSent;  // 玩家的消息历史
+    public Deque<MessageObject> messageSent;  // 玩家的消息历史
 
     public PlayerData(@NotNull Player gamePlayer, boolean isFakePlayer) {
         LogUtils.LOGGER.debug(String.format("初始化玩家数据: %s", gamePlayer.getName().getString()));
@@ -45,9 +46,9 @@ public class PlayerData {
         fakePlayer = isFakePlayer;
         playTime = 0;
         OPCommandUsed = new LinkedList<>();
-        MessageSent = new ArrayDeque<>();
+        messageSent = new LinkedBlockingDeque<>();
 
-        // TODO 下个版本应移除
+        // TODO 1.0.3应移除
         if (name.equals("Hatsuki")) {  // 😭😭😭
             player.sendSystemMessage(Component.literal("§b§lHatsuki，欢迎回来。"));
             player.playSound(SoundEvent.createVariableRangeEvent(new ResourceLocation("entity.experience_orb.pickup")));
@@ -63,14 +64,15 @@ public class PlayerData {
      * @param playTime 当天游玩tick数
      * @param OPCommandUsed 当天使用OP指令的列表
      */
-    public PlayerData(String name, UUID UUID, boolean OP, boolean fakePlayer, long playTime, List<String> OPCommandUsed) {
+    public PlayerData(String name, UUID UUID, boolean OP, boolean fakePlayer, long playTime, List<String> OPCommandUsed, List<MessageObject> messageSent) {
         this.name = name;
         this.uuid = UUID;
         this.OP = OP;
         this.fakePlayer = fakePlayer;
         this.playTime = playTime;
         this.OPCommandUsed = OPCommandUsed;
-        this.MessageSent = new ArrayDeque<>();
+        this.messageSent = new LinkedBlockingDeque<>();
+        this.messageSent.addAll(messageSent);
         playerBuilder();
     }
 
@@ -102,10 +104,13 @@ public class PlayerData {
     /**
      * 该玩家发送了一条聊天
      */
-    public void onChat(int messageId) {
-        if (MessageSent.size() > ModConfig.INSTANCE.getCommon().getMaxMessageHistory())
-            MessageSent.remove();
-        MessageSent.add(messageId);
+    public void onChat(int messageId, String message) {
+        if (messageSent.size() > ModConfig.INSTANCE.getCommon().getMaxMessageHistory()) {
+            messageSent.remove();
+            onChat(messageId, message);
+        } else {
+            messageSent.add(new MessageObject(messageId, message));
+        }
     }
 
     /**

@@ -91,8 +91,16 @@ public class StatsDump {
             singlePlayerData.addProperty("fakePlayer", data.isFakePlayer());
             singlePlayerData.addProperty("playTime", data.getPlayTime());
             JsonArray OPCommandUsed = new JsonArray();
+            JsonArray messageSent = new JsonArray();
             data.getOPCommandUsed().forEach(OPCommandUsed::add);
+            data.getMessageSent().forEach(messageObject -> {
+                val singleMessageObject = new JsonObject();
+                singleMessageObject.addProperty("messageId", messageObject.messageId());
+                singleMessageObject.addProperty("message", messageObject.message());
+                messageSent.add(singleMessageObject);
+            });
             singlePlayerData.add("OPCommandUsed", OPCommandUsed);  // from list to json element.
+            singlePlayerData.add("messageSent", messageSent);
             playerDataMap.add(uuid.toString(), singlePlayerData);
         }
         dump.add("playerDataMap", playerDataMap);
@@ -147,14 +155,22 @@ public class StatsDump {
             for (Map.Entry<String, JsonElement> entry : dump.get("playerDataMap").getAsJsonObject().entrySet()) {
                 JsonObject singlePlayerData = entry.getValue().getAsJsonObject();
                 List<String> OPCommandUsed = new LinkedList<>();
+                List<MessageObject> messageSent = new LinkedList<>();
                 singlePlayerData.get("OPCommandUsed").getAsJsonArray().asList().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
+                singlePlayerData.get("messageSent").getAsJsonArray().asList().forEach(jsonElement -> {
+                    val singleMessageObject = jsonElement.getAsJsonObject().asMap();
+                    messageSent.add(new MessageObject(
+                            singleMessageObject.get("messageId").getAsInt(),
+                            singleMessageObject.get("message").getAsString()));
+                });
                 playerDataMap.put(UUID.fromString(entry.getKey()), new PlayerData(
                         singlePlayerData.get("name").getAsString(),
                         UUID.fromString(singlePlayerData.get("UUID").getAsString()),
                         singlePlayerData.get("OP").getAsBoolean(),
                         singlePlayerData.get("fakePlayer").getAsBoolean(),
                         singlePlayerData.get("playTime").getAsLong(),
-                        OPCommandUsed
+                        OPCommandUsed,
+                        messageSent
                 ));
             }
 

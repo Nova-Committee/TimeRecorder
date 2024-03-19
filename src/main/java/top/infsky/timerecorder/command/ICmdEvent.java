@@ -1,6 +1,8 @@
 package top.infsky.timerecorder.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 
 import static net.minecraft.commands.Commands.*;
@@ -28,9 +30,12 @@ public class ICmdEvent {
                         .then(literal("reportqq")  // 对所有人显示和发送当日截止目前的统计信息到QQ
                                 .requires(source -> source.hasPermission(2))
                                 .executes(ReportQQCommand::execute))
-                        .then(literal("recall")
-                                .executes(RecallCommand::execute)  // 撤回上一条消息
-                )
+                        .then(literal("recall")  // 撤回上一条消息
+                                .executes(RecallCommand::execute)
+                                .then(literal("confirm")  // 确认撤回（由/tr recall触发）
+                                        .then(argument("message_id", IntegerArgumentType.integer())
+                                        .executes(RecallCommand.Confirm::execute)
+                                        )))
         );
     }
 }

@@ -62,9 +62,9 @@ public class StatsData {
         NextDay = LocalDate.now().plusDays(1);
     }
 
-    public void onChat(@NotNull ServerPlayer player, int messageId) {
+    public void onChat(@NotNull ServerPlayer player, int messageId, String message) {
         if (!onlineMap.containsKey(player.getUUID())) return;
-        playerDataMap.get(player.getUUID()).onChat(messageId);
+        playerDataMap.get(player.getUUID()).onChat(messageId, message);
     }
 
     /**
@@ -93,9 +93,9 @@ public class StatsData {
         if (ModConfig.INSTANCE.getCommon().isAllowGoodMorning())
             try {
                 switch ((short) Objects.requireNonNull(Utils.getSERVER().getLevel(Level.OVERWORLD)).getDayTime()) {
-                    case 1 -> Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal("§b§l早安世界！新的一天开始了！"), false);
-                    case 6001 -> Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal("§b§l中午好！今天也辛苦了。"), false);
-                    case 18001 -> Utils.getSERVER().getPlayerList().broadcastSystemMessage(Component.literal("§b§l熬夜也许不是好习惯？"), false);
+                    case 1 -> McBotSupport.sendAllPlayerMsg("§b§l早安世界！新的一天开始了！");
+                    case 6001 -> McBotSupport.sendAllPlayerMsg("§b§l中午好！今天也辛苦了。");
+                    case 18001 -> McBotSupport.sendAllPlayerMsg("§b§l熬夜也许不是好习惯？");
                 }
             } catch (NullPointerException e) {
                 LogUtils.LOGGER.error("主世界意外不存在！");
@@ -132,7 +132,7 @@ public class StatsData {
         String result = FamilyReport.getString(playerDataMap);
         LogUtils.LOGGER.info(result);
 
-        McBotSupport.sendGroupMsg(result);
+        McBotSupport.sendAllGroupMsg(result);
         StatsDump.save(StatsDump.getDump(this));
 
         try {

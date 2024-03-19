@@ -3,9 +3,7 @@ package top.infsky.timerecorder.command;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.GameRules;
 import org.jetbrains.annotations.NotNull;
-import top.infsky.timerecorder.Utils;
 
 public class HelpCommand {
     private static final String opHelpMsg = """

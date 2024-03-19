@@ -1,6 +1,7 @@
 package top.infsky.timerecorder.command;
 
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import top.infsky.timerecorder.Utils;
@@ -13,10 +14,11 @@ public class DumpCommand {
             LogUtils.LOGGER.info("通过指令保存统计数据");
 
             if (StatsDump.save(StatsDump.getDump(Utils.getStatsData())) == 1) {
-                context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。"), true);
+                context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。").withStyle(ChatFormatting.GREEN), true);
                 return 1;
             }
-            return -1;
+            context.getSource().sendSuccess(() -> Component.literal("统计数据保存失败").withStyle(ChatFormatting.RED), true);
+            return 1;
         }
     }
 
@@ -26,15 +28,15 @@ public class DumpCommand {
 
             try {
                 if (StatsDump.load() == 1) {
-                    context.getSource().sendSuccess(() -> Component.literal("成功还原统计数据。"), true);
+                    context.getSource().sendSuccess(() -> Component.literal("成功还原统计数据。").withStyle(ChatFormatting.GREEN), true);
                     return 1;
                 }
             } catch (RuntimeException e) {
                 context.getSource().sendFailure(Component.literal(e.getMessage()));
                 return -1;
             }
-            context.getSource().sendFailure(Component.literal("统计数据还原失败"));
-            return -1;
+            context.getSource().sendSuccess(() -> Component.literal("统计数据还原失败").withStyle(ChatFormatting.RED), true);
+            return 1;
         }
     }
 }
