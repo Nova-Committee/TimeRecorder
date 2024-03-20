@@ -48,10 +48,18 @@ public class StatsDump {
 
     public static int load() throws RuntimeException {
         try {
-            Path path = getLatestDump();
+            return load(getLatestDump());
+        } catch (IOException e) {
+            LogUtils.LOGGER.error("尝试还原统计数据时遇到异常", e);
+            return -1;
+        }
+    }
+
+    public static int load(Path path) throws RuntimeException {
+        try {
             if (!Files.exists(path)) {
                 LogUtils.LOGGER.error("尝试还原统计数据时遇到异常：文件不存在");
-                throw new RuntimeException("文件不存在！");
+                throw new IOException("文件不存在！");
             }
             JsonObject dump = new Gson().fromJson(Files.readString(path), JsonObject.class);
             return fromDump(dump, false);
@@ -60,7 +68,6 @@ public class StatsDump {
             return -1;
         }
     }
-
     /**
      * 由StatsData实例生成它的dump
      * @param stats StatsData实例
