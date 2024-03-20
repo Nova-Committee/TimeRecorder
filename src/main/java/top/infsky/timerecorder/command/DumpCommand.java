@@ -13,9 +13,15 @@ public class DumpCommand {
         public static int execute(CommandContext<CommandSourceStack> context) {
             LogUtils.LOGGER.info("通过指令保存统计数据");
 
-            if (StatsDump.save(StatsDump.getDump(Utils.getStatsData())) == 1) {
-                context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。").withStyle(ChatFormatting.GREEN), true);
-                return 1;
+            try {
+                if (StatsDump.save(StatsDump.getDump(Utils.getStatsData())) == 1) {
+                    context.getSource().sendSuccess(() -> Component.literal("统计数据已保存。").withStyle(ChatFormatting.GREEN), true);
+                    return 1;
+                }
+            } catch (RuntimeException e) {
+                LogUtils.LOGGER.error("在保存统计数据中出现了", e);
+                context.getSource().sendFailure(Component.literal(e.getMessage()));
+                return -1;
             }
             context.getSource().sendSuccess(() -> Component.literal("统计数据保存失败").withStyle(ChatFormatting.RED), true);
             return 1;
@@ -32,6 +38,7 @@ public class DumpCommand {
                     return 1;
                 }
             } catch (RuntimeException e) {
+                LogUtils.LOGGER.error("在加载统计数据中出现了", e);
                 context.getSource().sendFailure(Component.literal(e.getMessage()));
                 return -1;
             }

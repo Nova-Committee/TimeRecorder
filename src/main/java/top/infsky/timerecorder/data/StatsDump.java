@@ -4,7 +4,6 @@ import com.google.gson.*;
 import lombok.val;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.log.LogUtils;
@@ -12,10 +11,12 @@ import top.infsky.timerecorder.log.LogUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 public class StatsDump {
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_hhmmss");
     public static @NotNull Path getLatestDump() throws IOException {
         Path indexPath = Utils.CONFIG_FOLDER.resolve("index.json");
         JsonObject indexFile = new Gson().fromJson(Files.readString(indexPath), JsonObject.class);
@@ -23,7 +24,7 @@ public class StatsDump {
     }
 
     public static int save(final @NotNull JsonObject dump) {
-        String fileName = String.format("dump-%s.json", System.currentTimeMillis());
+        String fileName = String.format("dump_%s.json", DATE_FORMAT.format(new Date()));
         Path dumpPath = Utils.CONFIG_FOLDER.resolve(fileName);
         Path indexPath = Utils.CONFIG_FOLDER.resolve("index.json");
         try {
@@ -53,10 +54,9 @@ public class StatsDump {
                 throw new RuntimeException("文件不存在！");
             }
             JsonObject dump = new Gson().fromJson(Files.readString(path), JsonObject.class);
-            return fromDump(dump);
+            return fromDump(dump, false);
         } catch (IOException e) {
-            LogUtils.LOGGER.error("尝试还原统计数据时遇到异常");
-            LogUtils.LOGGER.error(e.getMessage());
+            LogUtils.LOGGER.error("尝试还原统计数据时遇到异常", e);
             return -1;
         }
     }
@@ -111,37 +111,41 @@ public class StatsDump {
     /**
      * 由dump还原StatsData实例
      * @param dump Json对象，用于存储StatsData状态
+     * @param bypassCheck 取消一致性检查
      * @return 成功与否
      * @throws IOException 当遇到任何问题
      */
-    public static int fromDump(final JsonObject dump) throws IOException {
-        // 一致性检查
-        try {
-            // mod版本
-            if (FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).isPresent()) {
-                if (!dump.get("version").getAsString().equals(
-                        FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).get().getMetadata().getVersion().toString()))
-                    throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 模组版本错误。");
-            } else {
-                throw new RuntimeException(String.format("模组'%s'意外不存在！联系模组制作者或检查你的模组列表。", Utils.getMOD_ID()));
+    public static int fromDump(JsonObject dump, boolean bypassCheck) throws IOException {
+        if (!bypassCheck) {
+            // 一致性检查
+            try {
+                // mod版本
+                if (FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).isPresent()) {
+                    if (!dump.get("version").getAsString().equals(
+                            FabricLoader.getInstance().getModContainer(Utils.getMOD_ID()).get().getMetadata().getVersion().toString())) {
+                        LogUtils.LOGGER.warn("从dump恢复统计数据状态时一致性检查出错: 模组版本错误。执行数据迁移...");
+                        return updateDumpAndRevert(dump);
+                    }
+                } else {
+                    throw new RuntimeException(String.format("模组'%s'意外不存在！请联系模组维护者。", Utils.getMOD_ID()));
+                }
+                // 配置文件哈希
+                if (dump.get("hash").getAsInt() != Utils.getStatsData().REPORT_TIME.hashCode())
+                    throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 配置文件错误。");
+                // 时间
+                val baseReportTime = ModConfig.INSTANCE.getCommon().getTime().split(":");
+                Calendar dumpTime = Calendar.getInstance();
+                Calendar reportTime = Calendar.getInstance();
+                dumpTime.setTime(new Date(dump.get("time").getAsLong()));
+                reportTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(baseReportTime[0]));
+                reportTime.set(Calendar.MINUTE, Integer.parseInt(baseReportTime[1]));
+                reportTime.set(Calendar.SECOND, Integer.parseInt(baseReportTime[2]));
+                if (Calendar.getInstance().after(reportTime)) reportTime.add(Calendar.DATE, 1);  // fix bugs
+                if (dumpTime.after(reportTime))
+                    throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 数据已失效。");
+            } catch (NullPointerException e) {
+                LogUtils.LOGGER.error("从dump恢复统计数据状态失败！一致性检查出错: null", e);
             }
-            // 配置文件哈希
-            if (dump.get("hash").getAsInt() != Utils.getStatsData().REPORT_TIME.hashCode())
-                throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 配置文件错误。");
-            // 时间
-            val baseReportTime = ModConfig.INSTANCE.getCommon().getTime().split(":");
-            Calendar dumpTime = Calendar.getInstance();
-            Calendar reportTime = Calendar.getInstance();
-            dumpTime.setTime(new Date(dump.get("time").getAsLong()));
-            reportTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(baseReportTime[0]));
-            reportTime.set(Calendar.MINUTE, Integer.parseInt(baseReportTime[1]));
-            reportTime.set(Calendar.SECOND, Integer.parseInt(baseReportTime[2]));
-            if (Calendar.getInstance().after(reportTime)) reportTime.add(Calendar.DATE, 1);  // fix bugs
-            if (dumpTime.after(reportTime))
-                throw new RuntimeException("从dump恢复统计数据状态失败！一致性检查出错: 数据已失效。");
-        } catch (NullPointerException e) {
-            LogUtils.LOGGER.error("从dump恢复统计数据状态失败！一致性检查出错: null");
-            LogUtils.LOGGER.error(e.getMessage());
         }
 
         try {
@@ -152,8 +156,8 @@ public class StatsDump {
 
             // playerDataMap
             HashMap<UUID, PlayerData> playerDataMap = new HashMap<>();
-            for (Map.Entry<String, JsonElement> entry : dump.get("playerDataMap").getAsJsonObject().entrySet()) {
-                JsonObject singlePlayerData = entry.getValue().getAsJsonObject();
+            for (JsonElement values : dump.get("playerDataMap").getAsJsonObject().asMap().values()) {
+                JsonObject singlePlayerData = values.getAsJsonObject();
                 List<String> OPCommandUsed = new LinkedList<>();
                 List<MessageObject> messageSent = new LinkedList<>();
                 singlePlayerData.get("OPCommandUsed").getAsJsonArray().asList().forEach(jsonElement -> OPCommandUsed.add(jsonElement.getAsString()));
@@ -163,7 +167,7 @@ public class StatsDump {
                             singleMessageObject.get("messageId").getAsInt(),
                             singleMessageObject.get("message").getAsString()));
                 });
-                playerDataMap.put(UUID.fromString(entry.getKey()), new PlayerData(
+                playerDataMap.put(UUID.fromString(singlePlayerData.get("UUID").getAsString()), new PlayerData(
                         singlePlayerData.get("name").getAsString(),
                         UUID.fromString(singlePlayerData.get("UUID").getAsString()),
                         singlePlayerData.get("OP").getAsBoolean(),
@@ -179,5 +183,33 @@ public class StatsDump {
             throw new IOException(e);
         }
         return 1;
+    }
+
+    private static @NotNull JsonObject updateDump(@NotNull final JsonObject baseDump) {
+        JsonObject dump = baseDump.deepCopy();
+        // onlineMap
+        if (!dump.has("onlineMap"))
+            dump.add("onlineMap", new JsonObject());
+
+        // playerDataMap
+        if (!dump.has("playerDataMap"))
+            dump.add("playerDataMap", new JsonObject());
+        else {
+            JsonObject dataMap = dump.get("playerDataMap").getAsJsonObject().deepCopy();
+            dataMap.asMap().values().forEach(jsonElement -> {
+                if (!jsonElement.getAsJsonObject().has("OPCommandUsed"))
+                    jsonElement.getAsJsonObject().add("OPCommandUsed", new JsonArray());  // 我是傻逼
+                if (!jsonElement.getAsJsonObject().has("messageSent"))
+                    jsonElement.getAsJsonObject().add("messageSent", new JsonArray());
+            });
+            dump.remove("playerDataMap");
+            dump.add("playerDataMap", dataMap);
+        }
+        return dump;
+    }
+
+    private static int updateDumpAndRevert(final @NotNull JsonObject baseDump) throws IOException {
+        JsonObject dump = updateDump(baseDump);
+        return fromDump(dump, true);
     }
 }

@@ -26,6 +26,6 @@ public class McBotSupport {
         JsonObject json = new Gson().fromJson(
                 String.format("{'message_id': %s}", message_id),
                 JsonObject.class);
-        Const.customRequest(ActionType.DELETE_MSG, json);
+        customRequest(ActionType.DELETE_MSG, json);
     }
 }
