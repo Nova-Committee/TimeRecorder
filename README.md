@@ -47,27 +47,15 @@
 ```
 - **[仅限管理员]** 生成每个玩家的报告
 
-```json
-{
-    "version": "1.0.0",
-    "hash": 0,
-    "time": 1710675809885,
-    "onlineMap": {
-        "326aafd8-78b5-32ee-b653-4a9b189472b0": true
-    },
-    "playerDataMap": {
-        "326aafd8-78b5-32ee-b653-4a9b189472b0": {
-            "name": "xia__mc",
-            "UUID": "326aafd8-78b5-32ee-b653-4a9b189472b0",
-            "OP": true,
-            "fakePlayer": false,
-            "playTime": 1397,
-            "OPCommandUsed": []
-        }
-    }
-}
-```
-- **[仅限管理员]** 存储/加载统计数据
+## 指令
+- /tr help - 显示此帮助信息
+- /tr report - 显示当日服务器日报
+- /tr recall - 撤回上一条消息
+- /tr reportQQ - 显示和发送当日服务器日报到QQ **\[仅限管理员]**
+- /tr reportAll - 显示当日所有玩家的统计信息 **\[仅限管理员]**
+- /tr reload - 重载配置文件 **\[仅限管理员]**
+- /tr dump save - 保存统计信息
+- /tr dump load \[\<filename>] - 还原统计信息
 
 ## 兼容性
 支持**Vanish** Mod：隐身玩家不会被标记为在线，也不会统计它们的在线时间。
