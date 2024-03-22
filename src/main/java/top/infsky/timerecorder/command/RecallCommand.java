@@ -21,8 +21,8 @@ public class RecallCommand {
         MessageObject messageObject;
         try {
             messageObject = Objects.requireNonNull(Utils.getPlayer(Objects.requireNonNull(context.getSource().getPlayer()).getUUID())).getMessageSent().removeLast();
-        } catch (NullPointerException | NoSuchElementException e) {
-            LogUtils.LOGGER.error("尝试撤回消息时失败", e);
+        } catch (NullPointerException | NoSuchElementException ignored) {
+            LogUtils.LOGGER.error("尝试撤回消息时失败");
             context.getSource().sendSystemMessage(Component.literal("无法撤回消息").withStyle(ChatFormatting.DARK_RED));
             return 1;
         }
