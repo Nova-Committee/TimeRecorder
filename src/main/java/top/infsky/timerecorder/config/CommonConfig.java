@@ -32,8 +32,6 @@ public class CommonConfig extends AutoLoadTomlConfig {
     private boolean groupOn = true;
     @TableField(rightComment = "Q群列表")
     private List<Long> groupIdList = new ArrayList<>();  // 支持多个q群
-    @TableField(rightComment = "机器人qq")
-    private long botId = 0;  // 机器人qq
 
     public CommonConfig() {
         super(null);
