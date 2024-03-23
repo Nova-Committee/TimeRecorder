@@ -24,13 +24,14 @@ public class ModConfig extends AutoReloadToml {
 
     @TableField(value = "common", topComment = "通用")
     private CommonConfig common = new CommonConfig();
+    @TableField(value = "addon", topComment = "扩展")
+    private AddonConfig addon = new AddonConfig();
 //    @TableField(value = "anticheat", topComment = "反作弊(实验性)")
 //    private AntiCheatConfig antiCheatConfig = new AntiCheatConfig();
 
 
     public ModConfig() {
         super(null, Utils.CONFIG_FILE);
-        init();
     }
 
     public ModConfig(TomlTable source) {
@@ -38,9 +39,6 @@ public class ModConfig extends AutoReloadToml {
         this.load(ModConfig.class);
     }
 
-    public static void init() {
-        INSTANCE.common.init();
-    }
     @Override
     public void save(){
         TomlUtil.writeConfig(Utils.CONFIG_FILE,INSTANCE);

@@ -105,7 +105,7 @@ public class PlayerData {
      * 该玩家发送了一条聊天
      */
     public void onChat(int messageId, String message) {
-        if (messageSent.size() > ModConfig.INSTANCE.getCommon().getMaxMessageHistory()) {
+        if (messageSent.size() > ModConfig.INSTANCE.getAddon().getMaxMessageHistory()) {
             messageSent.remove();
             onChat(messageId, message);
         } else {

@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.compat.VanishAPI;
@@ -67,6 +68,27 @@ public class StatsData {
         playerDataMap.get(player.getUUID()).onChat(messageId, message);
     }
 
+    public void onEarlyChat(@NotNull ServerPlayer player, String rawMessage, CallbackInfo ci) {
+        String message = rawMessage;
+        // 屏蔽器
+        if (!ModConfig.INSTANCE.getAddon().isAllowFilter()) return;
+        if (ModConfig.INSTANCE.getAddon().isAllowOPBypassFilter() && player.hasPermissions(2)) return;
+
+        boolean isFiltered = false;
+        for (String string : ModConfig.INSTANCE.getAddon().getFilterWords()) {
+            if (message.contains(string)) {
+                isFiltered = true;
+                message = message.replace(string, "*".repeat(string.length()));
+            }
+        }
+
+        if (isFiltered) {
+            ci.cancel();
+            LogUtils.alert(player.getName().getString(), "BadMessage", rawMessage);
+            Utils.sendChatAs(player, message);
+        }
+    }
+
     /**
      * 每tick更新玩家统计信息
      * @param ignoredServer 传null也不是不行
@@ -90,7 +112,7 @@ public class StatsData {
         }
 
         // 早安
-        if (ModConfig.INSTANCE.getCommon().isAllowGoodMorning())
+        if (ModConfig.INSTANCE.getAddon().isAllowGoodMorning())
             try {
                 switch ((short) Objects.requireNonNull(Utils.getSERVER().getLevel(Level.OVERWORLD)).getDayTime()) {
                     case 1 -> McBotSupport.sendAllPlayerMsg("§b§l早安世界！新的一天开始了！");

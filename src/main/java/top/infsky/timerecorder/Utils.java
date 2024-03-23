@@ -1,7 +1,11 @@
 package top.infsky.timerecorder;
 
+import cn.evole.mods.mcbot.init.callbacks.IEvents;
 import lombok.Getter;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.data.PlayerData;
 import top.infsky.timerecorder.data.StatsData;
@@ -29,6 +33,16 @@ public class Utils {
         } catch (NullPointerException e) {
             LogUtils.LOGGER.error("获取PlayerData时失败", e);
             return null;
+        }
+    }
+
+    public static void sendChatAs(ServerPlayer player, String message) {
+        if (getSERVER() != null) {
+            getSERVER().getPlayerList().broadcastChatMessage(
+                    PlayerChatMessage.unsigned(player.getUUID(), message),
+                    player,
+                    ChatType.bind(ChatType.CHAT, player));
+            IEvents.SERVER_CHAT.invoker().onChat(player, message);  // TODO [包含尚未解决的问题] 很奇怪，上面一条指令应该就能触发McBot的mixin的...但是并没有。
         }
     }
 }

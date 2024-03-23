@@ -26,9 +26,7 @@ public class CommonConfig extends AutoLoadTomlConfig {
     @TableField(rightComment = "允许统计指令")
     private boolean allowCommandStats = true;
     @TableField(rightComment = "统计指令列表")
-    private List<String> commandStatsList = new ArrayList<>();
-    @TableField(rightComment = "允许定时消息")
-    private boolean allowGoodMorning = true;
+    private List<String> commandStatsList = List.of("gamemode", "tp");
 
     @TableField(rightComment = "开启Q群功能")
     private boolean groupOn = true;
@@ -36,8 +34,6 @@ public class CommonConfig extends AutoLoadTomlConfig {
     private List<Long> groupIdList = new ArrayList<>();  // 支持多个q群
     @TableField(rightComment = "机器人qq")
     private long botId = 0;  // 机器人qq
-    @TableField(rightComment = "消息记录上限")
-    private long maxMessageHistory = 10;  // 目前用于撤回
 
     public CommonConfig() {
         super(null);
@@ -48,10 +44,6 @@ public class CommonConfig extends AutoLoadTomlConfig {
         this.load(CommonConfig.class);
     }
 
-    public void init() {
-        commandStatsList.add("gamemode");
-        commandStatsList.add("tp");
-    }
     public void removeGroupId(long id) {
         groupIdList.remove(id);
     }

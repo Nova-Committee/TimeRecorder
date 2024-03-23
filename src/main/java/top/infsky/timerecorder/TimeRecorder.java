@@ -48,6 +48,7 @@ public class TimeRecorder implements ModInitializer {
         Utils.statsData = new StatsData();
 
         ServerTickEvents.END_SERVER_TICK.register(Utils.statsData::update);
+        McBotEvents.BEFORE_CHAT.register(Utils.statsData::onEarlyChat);
         McBotEvents.ON_CHAT.register(Utils.statsData::onChat);
     }
 
