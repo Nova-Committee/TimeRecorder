@@ -1,15 +1,15 @@
 package top.infsky.timerecorder.data;
 
 import lombok.Getter;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.config.ModConfig;
+import top.infsky.timerecorder.data.mcstats.StatsObject;
 import top.infsky.timerecorder.log.LogUtils;
 
 import java.util.*;
@@ -22,6 +22,8 @@ public class PlayerData {
      */
     @Nullable
     public Player player;  // 玩家
+    @Nullable
+    public ServerStatsCounter vanillaStats; // 原版统计信息
 
     public String name;  // 名字
 
@@ -32,6 +34,8 @@ public class PlayerData {
     public boolean fakePlayer;  // 是否为假玩家（仅视觉）
 
     public long playTime;  // 当天游玩tick数
+
+    public StatsObject statsObject; // 原版统计信息offset
 
     public List<String> OPCommandUsed;  // 当天使用OP指令的列表
 
@@ -47,12 +51,8 @@ public class PlayerData {
         playTime = 0;
         OPCommandUsed = new LinkedList<>();
         messageSent = new LinkedBlockingDeque<>();
-
-        // TODO 1.0.3应移除
-        if (name.equals("Hatsuki")) {  // 😭😭😭
-            player.sendSystemMessage(Component.literal("§b§lHatsuki，欢迎回来。"));
-            player.playSound(SoundEvent.createVariableRangeEvent(new ResourceLocation("entity.experience_orb.pickup")));
-        }
+        vanillaStats = ((ServerPlayer) player).getStats();
+        statsObject = new StatsObject((ServerPlayer) player, vanillaStats);
     }
 
     /**
@@ -77,14 +77,13 @@ public class PlayerData {
     }
 
     public void playerBuilder() {
-        if (player != null) return;
+        assert Utils.getSERVER() != null;
         try {
-            if (Utils.getSERVER() != null) {
+            if (player == null)
                 player = Utils.getSERVER().getPlayerList().getPlayer(uuid);
-                return;
-            }
-            throw new RuntimeException("意外的playerBuilder()当无任何有效连接");
-        } catch (RuntimeException e) {
+            if (vanillaStats == null && player != null)
+                vanillaStats = ((ServerPlayer) player).getStats();
+        } catch (Exception e) {
             LogUtils.LOGGER.error(String.format("恢复玩家 %s 失败。", uuid), e);
         }
     }
@@ -114,10 +113,16 @@ public class PlayerData {
     }
 
     /**
-     * 一天过完了
+     * 获取活跃度
      */
-    public void reset() {
-        playTime = 0;
-        OPCommandUsed = new LinkedList<>();
+    public float getActive() {
+        return (float) (
+                statsObject.getMoveDistance(vanillaStats) * ModConfig.INSTANCE.getAddon().getMoveDistanceWeight() +
+                ((double) statsObject.getItemPick(vanillaStats)) * ModConfig.INSTANCE.getAddon().getItemPickWeight() +
+                ((double) statsObject.getBlockBreak(vanillaStats)) * ModConfig.INSTANCE.getAddon().getBlockBreakWeight() +
+                ((double) statsObject.getBlockPlace(vanillaStats)) * ModConfig.INSTANCE.getAddon().getBlockPlaceWeight() +
+                ((double) statsObject.getEntityKilled(vanillaStats)) * ModConfig.INSTANCE.getAddon().getEntityKilledWeight()
+        ) / playTime;
+
     }
 }

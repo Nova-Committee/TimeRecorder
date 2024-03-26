@@ -177,7 +177,7 @@ public class StatsData {
         }
 
         if (result.isEmpty()) return "";
-        result.delete(result.length() - 3, result.length() - 1);
+        result.delete(result.length() - 2, result.length() - 1);
         return result.toString();
     }
 
