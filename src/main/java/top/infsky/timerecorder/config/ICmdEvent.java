@@ -1,26 +1,29 @@
-package top.infsky.timerecorder.command;
+package top.infsky.timerecorder.config;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
+import top.infsky.timerecorder.anticheat.command.*;
+import top.infsky.timerecorder.command.*;
 
 import static net.minecraft.commands.Commands.*;
 
 public class ICmdEvent {
     public static void register(@NotNull CommandDispatcher<CommandSourceStack> dispatcher) {
+        // TimeRecorder本体
         dispatcher.register(literal("tr")  // 没参数默认显示帮助信息
-                .executes(HelpCommand::execute)
+                .executes(top.infsky.timerecorder.command.HelpCommand::execute)
                 .then(literal("help")  // 显示帮助信息
-                        .executes(HelpCommand::execute))
+                        .executes(top.infsky.timerecorder.command.HelpCommand::execute))
                 .then(literal("reload")  // 热重载
                         .requires(source -> source.hasPermission(2))
                         .executes(ReloadCommand::execute))
                 .then(literal("dump")
                         .requires(source -> source.hasPermission(2))
                         .then(literal("save")  // 保存迄今的统计数据
-                        .executes(DumpCommand.Save::execute))
+                                .executes(DumpCommand.Save::execute))
                         .then(literal("load")  // 从文件还原统计数据
                                 .executes(DumpCommand.Load::execute)
                                 .then(argument("filename", StringArgumentType.string())
@@ -37,8 +40,13 @@ public class ICmdEvent {
                         .executes(RecallCommand::execute)
                         .then(literal("confirm")  // 确认撤回（由/tr recall触发）
                                 .then(argument("message_id", IntegerArgumentType.integer())
-                                .executes(RecallCommand.Confirm::execute))))
-                .then(literal("alert")  // 启用警报
+                                        .executes(RecallCommand.Confirm::execute))))
+        );
+
+        // TimeRecorder Anti-Cheat 模块
+        dispatcher.register(literal("trac")  // 没参数默认显示帮助信息
+                .executes(top.infsky.timerecorder.anticheat.command.HelpCommand::execute)
+                .then(literal("alert")  // 显示警报
                         .requires(source -> source.hasPermission(2))
                         .executes(AlertCommand::execute))
         );

@@ -1,6 +1,8 @@
 package top.infsky.timerecorder.anticheat;
 
 import lombok.Getter;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -43,11 +45,14 @@ public abstract class Check {
     public final void setback(@NotNull Vec3 position) {
         if (!CONFIG().isAllowSetback()) return;
         player.teleportTo(position.x(), position.y(), position.z());
+        player.connection.resetPosition();
     }
 
-    public abstract void _onTick();
+    public void _onTick() {}
 
-    public abstract void _onTeleport();
+    public void _onTeleport() {}
+
+    public void _onPacketReceive(Packet<ServerGamePacketListener> packet) {}
 
     public void update() {
         if (player == null) return;

@@ -1,5 +1,6 @@
 package top.infsky.timerecorder.anticheat.checks;
 
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.phys.Vec3;
 import top.infsky.timerecorder.anticheat.Check;
 import top.infsky.timerecorder.data.PlayerData;
@@ -18,6 +19,7 @@ public class FlightA extends Check {
 
     @Override
     public void _onTick() {
+        if (player.getUseItem().getItem() instanceof TridentItem) return;
 
         if (disableTick > 0) {
             disableTick--;
@@ -36,9 +38,17 @@ public class FlightA extends Check {
             setbackPos = lastInWaterPos;
         }
 
+        // fix hurt
+        if (player.hurtTime > 0) {
+            jumpTick = 6;
+            setbackPos = currentPos;
+        }
+
 
         if (!player.onGround() && jumpTick > 0
-                && currentPos.y() - lastOnGroundPos.y() < 1.25219 + CONFIG().getThreshold()) {
+                && currentPos.y() - lastOnGroundPos.y() < 1.25219 * (1 + player.getJumpBoostPower()) + CONFIG().getThreshold()
+                && currentPos.distanceTo(lastPos) < player.getSpeed() + CONFIG().getThreshold()
+        ) {
             jumpTick--;
         } else if (!player.isInWater() && waterTick > 0
 //                && (lastPos.y() - lastPos2.y() + CONFIG().getThreshold()) > (player.position().y() - lastPos.y())  // 警惕出水弱检测

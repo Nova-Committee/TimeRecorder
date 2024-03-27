@@ -1,22 +1,19 @@
 package top.infsky.timerecorder;
 
 import cn.evole.mods.mcbot.api.McBotEvents;
-import cn.evole.mods.mcbot.init.callbacks.IEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
-import top.infsky.timerecorder.command.ICmdEvent;
+import top.infsky.timerecorder.config.ICmdEvent;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.StatsData;
 import top.infsky.timerecorder.data.StatsDump;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Objects;
 
 public class TimeRecorder implements ModInitializer {
     @Override

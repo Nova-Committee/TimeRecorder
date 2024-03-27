@@ -1,4 +1,4 @@
-package top.infsky.timerecorder.command;
+package top.infsky.timerecorder.anticheat.command;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
