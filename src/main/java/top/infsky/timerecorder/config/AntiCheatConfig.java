@@ -14,6 +14,8 @@ import java.util.List;
 public class AntiCheatConfig extends AutoLoadTomlConfig {
     @TableField(rightComment = "启用反作弊")
     private boolean enable = false;
+    @TableField(rightComment = "允许拉回")
+    private boolean allowSetback = true;
     @TableField(rightComment = "允许展示警报的玩家")
     private List<String> allowAlertPlayers = new ArrayList<>();
     @TableField(rightComment = "最大偏移量")

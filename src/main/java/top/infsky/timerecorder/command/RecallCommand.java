@@ -20,7 +20,7 @@ public class RecallCommand {
     public static int execute(@NotNull CommandContext<CommandSourceStack> context) {
         MessageObject messageObject;
         try {
-            messageObject = Objects.requireNonNull(Utils.getPlayer(Objects.requireNonNull(context.getSource().getPlayer()).getUUID())).getMessageSent().removeLast();
+            messageObject = Utils.getPlayer(Objects.requireNonNull(context.getSource().getPlayer()).getUUID()).getMessageSent().removeLast();
         } catch (NullPointerException | NoSuchElementException ignored) {
             LogUtils.LOGGER.error("尝试撤回消息时失败");
             context.getSource().sendSystemMessage(Component.literal("无法撤回消息").withStyle(ChatFormatting.DARK_RED));

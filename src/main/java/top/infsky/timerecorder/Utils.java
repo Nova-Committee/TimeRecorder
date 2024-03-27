@@ -27,13 +27,8 @@ public class Utils {
     @Getter
     public static StatsData statsData;
 
-    public static @Nullable PlayerData getPlayer(UUID uuid){
-        try {
-            return Objects.requireNonNull(Utils.getStatsData().getPlayerDataMap().get(uuid));
-        } catch (NullPointerException e) {
-            LogUtils.LOGGER.error("获取PlayerData时失败", e);
-            return null;
-        }
+    public static @Nullable PlayerData getPlayer(UUID uuid) throws NullPointerException {
+        return Utils.getStatsData().getPlayerDataMap().get(uuid);
     }
 
     public static void sendChatAs(ServerPlayer player, String message) {

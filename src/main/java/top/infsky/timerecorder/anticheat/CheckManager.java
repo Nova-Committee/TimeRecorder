@@ -17,14 +17,22 @@ public class CheckManager {
 
     @Contract("_ -> new")
     public static @NotNull CheckManager create(PlayerData playerData) {
-        return new CheckManager(List.of(
+        final CheckManager checkManager = new CheckManager(List.of(
                 new FlightA(playerData)
         ));
+        checkManager.onTeleport();
+        return checkManager;
     }
 
     public void update() {
         for (Check check : checks) {
             check.update();
+        }
+    }
+
+    public void onTeleport() {
+        for (Check check : checks) {
+            check._onTeleport();
         }
     }
 }

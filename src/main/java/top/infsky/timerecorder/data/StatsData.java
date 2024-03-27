@@ -143,6 +143,7 @@ public class StatsData {
         onlineMap.replace(uuid, true);
         try {
             playerDataMap.get(uuid).update();
+            playerDataMap.get(uuid).playerBuilder((ServerPlayer) player);
         } catch (NullPointerException e) {
             LogUtils.LOGGER.error(String.format("玩家 %s 的数据不存在！丢弃玩家。", player.getName()), e);
             onlineMap.remove(uuid);

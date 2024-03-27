@@ -2,42 +2,61 @@ package top.infsky.timerecorder.anticheat.checks;
 
 import net.minecraft.world.phys.Vec3;
 import top.infsky.timerecorder.anticheat.Check;
-import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.PlayerData;
 
 public class FlightA extends Check {
-    public Vec3 lastPos;
-    public Vec3 lastPos2;
-    public Vec3 lastOnGroundPos;
+    public short jumpTick = 0;
+    public short waterTick = 0;
     public short disableTick = 0;
+
+    public Vec3 setbackPos;
 
     public FlightA(PlayerData player) {
         super("FlightA", player);
-        assert player.player != null;
-        lastPos = player.player.position();
+        setbackPos = currentPos;
     }
 
     @Override
     public void _onTick() {
-        assert player.player != null;
+
+        if (disableTick > 0) {
+            disableTick--;
+            return;
+        }
 
         // fix jump
-        if (player.player.onGround()) {
-            lastOnGroundPos = player.player.position();
-            disableTick = 8;
+        if (player.onGround()) {
+            jumpTick = 8;
+            setbackPos = lastOnGroundPos;
         }
 
-        if (!player.player.onGround() && disableTick > 0
-                && player.player.position().y() - lastOnGroundPos.y() < 1.25219 + ModConfig.INSTANCE.getAntiCheat().getThreshold()) {
-            disableTick--;
-        } else if (lastPos2 != null && !player.player.onGround()) {
-            disableTick = 0;
-            if (lastPos.y() - player.player.position().y() < ModConfig.INSTANCE.getAntiCheat().getThreshold() &&
-                    lastPos2.y() - lastPos.y() <= ModConfig.INSTANCE.getAntiCheat().getThreshold()) {
-                flag(String.format("Pos:%s OnGround:%s", player.player.position(), player.player.onGround()));
+        // fix water
+        if (player.isInWater()) {
+            waterTick = 8;
+            setbackPos = lastInWaterPos;
+        }
+
+
+        if (!player.onGround() && jumpTick > 0
+                && currentPos.y() - lastOnGroundPos.y() < 1.25219 + CONFIG().getThreshold()) {
+            jumpTick--;
+        } else if (!player.isInWater() && waterTick > 0
+//                && (lastPos.y() - lastPos2.y() + CONFIG().getThreshold()) > (player.position().y() - lastPos.y())  // 警惕出水弱检测
+        ) {
+            waterTick--;
+        } else if (lastPos2 != null && !player.onGround() && !player.isInWater()) {
+            jumpTick = 0;
+            waterTick = 0;
+            if (lastPos.y() - player.position().y() < CONFIG().getThreshold() &&
+                    lastPos2.y() - lastPos.y() <= CONFIG().getThreshold()) {
+                flag();
+                setback(setbackPos);
             }
         }
-        lastPos2 = lastPos;
-        lastPos = player.player.position();
+    }
+
+    @Override
+    public void _onTeleport() {
+        disableTick = 6;
     }
 }

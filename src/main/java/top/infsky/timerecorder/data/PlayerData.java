@@ -25,7 +25,6 @@ public class PlayerData {
     public Player player;  // 玩家
     @Nullable
     public ServerStatsCounter vanillaStats;  // 原版统计信息
-    @Nullable
     public CheckManager antiCheat;  // 反作弊模块
 
     public String name;  // 名字
@@ -87,6 +86,16 @@ public class PlayerData {
                 player = Utils.getSERVER().getPlayerList().getPlayer(uuid);
             if (vanillaStats == null && player != null)
                 vanillaStats = ((ServerPlayer) player).getStats();
+        } catch (Exception e) {
+            LogUtils.LOGGER.error(String.format("恢复玩家 %s 失败。", uuid), e);
+        }
+    }
+
+    public void playerBuilder(ServerPlayer player) {
+        try {
+            this.player = player;
+            if (player != null)
+                vanillaStats = player.getStats();
         } catch (Exception e) {
             LogUtils.LOGGER.error(String.format("恢复玩家 %s 失败。", uuid), e);
         }
