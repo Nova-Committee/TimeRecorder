@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
-import top.infsky.timerecorder.anticheat.CheckManager;
+import top.infsky.timerecorder.anticheat.TRPlayer;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.mcstats.StatsObject;
@@ -25,7 +25,7 @@ public class PlayerData {
     public Player player;  // 玩家
     @Nullable
     public ServerStatsCounter vanillaStats;  // 原版统计信息
-    public CheckManager antiCheat;  // 反作弊模块
+    public TRPlayer antiCheat;  // 反作弊模块
 
     public String name;  // 名字
 
@@ -37,7 +37,7 @@ public class PlayerData {
 
     public long playTime;  // 当天游玩tick数
 
-    public StatsObject statsObject; // 原版统计信息offset
+    public StatsObject statsObject; // 原版统计信息的友善化对象。基于偏移量。
 
     public List<String> OPCommandUsed;  // 当天使用OP指令的列表
 
@@ -55,7 +55,7 @@ public class PlayerData {
         messageSent = new LinkedBlockingDeque<>();
         vanillaStats = ((ServerPlayer) player).getStats();
         statsObject = new StatsObject((ServerPlayer) player, vanillaStats);
-        antiCheat = CheckManager.create(this);
+        antiCheat = new TRPlayer(this);
     }
 
     /**

@@ -4,37 +4,43 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import top.infsky.timerecorder.anticheat.checks.BlinkA;
-import top.infsky.timerecorder.anticheat.checks.FlightA;
-import top.infsky.timerecorder.data.PlayerData;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import top.infsky.timerecorder.anticheat.checks.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CheckManager {
-    public final PlayerData playerData;
+    public final TRPlayer player;
     public List<Check> checks = new ArrayList<>();
-    public double violations = 0;
-    public CheckManager(List<Check> checks, PlayerData playerData) {
-        this.playerData = playerData;
+    public CheckManager(List<Check> checks, TRPlayer player) {
+        this.player = player;
         this.checks.addAll(checks);
     }
 
     @Contract("_ -> new")
-    public static @NotNull CheckManager create(PlayerData playerData) {
+    public static @NotNull CheckManager create(TRPlayer player) {
         final CheckManager checkManager = new CheckManager(List.of(
-                new FlightA(playerData),
-                new BlinkA(playerData)
-        ), playerData);
+                new FlightA(player),
+                new BlinkA(player),
+                new AirJumpA(player),
+                new AirPlaceA(player),
+                new SpeedA(player)
+        ), player);
         checkManager.onTeleport();
         return checkManager;
     }
 
     public void update() {
-        assert playerData.player != null;
-        if (playerData.player.isSpectator()) return;
+        if (player.fabricPlayer.isSpectator() || player.fabricPlayer.isCreative()) return;
         for (Check check : checks) {
-            check.update();
+            check._onTick();
+        }
+    }
+
+    public void onPacketReceive(Packet<ServerGamePacketListener> packet, CallbackInfo ci) {
+        for (Check check : checks) {
+            check._onPacketReceive(packet, ci);
         }
     }
 
@@ -44,9 +50,9 @@ public class CheckManager {
         }
     }
 
-    public void onPacketReceive(Packet<ServerGamePacketListener> packet) {
+    public void onJump() {
         for (Check check : checks) {
-            check._onPacketReceive(packet);
+            check._onJump();
         }
     }
 }

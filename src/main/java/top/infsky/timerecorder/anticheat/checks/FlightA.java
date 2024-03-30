@@ -3,62 +3,63 @@ package top.infsky.timerecorder.anticheat.checks;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.phys.Vec3;
 import top.infsky.timerecorder.anticheat.Check;
-import top.infsky.timerecorder.data.PlayerData;
+import top.infsky.timerecorder.anticheat.TRPlayer;
+
+import static top.infsky.timerecorder.anticheat.TRPlayer.CONFIG;
 
 public class FlightA extends Check {
     public short jumpTick = 0;
-    public short waterTick = 0;
+    public short liquidTick = 0;
     public short disableTick = 0;
 
     public Vec3 setbackPos;
 
-    public FlightA(PlayerData player) {
+    public FlightA(TRPlayer player) {
         super("FlightA", player);
-        setbackPos = currentPos;
+        setbackPos = player.currentPos;
     }
 
     @Override
     public void _onTick() {
-        if (player.getUseItem().getItem() instanceof TridentItem) return;
+        if (player.fabricPlayer.getUseItem().getItem() instanceof TridentItem) return;
 
         if (disableTick > 0) {
             disableTick--;
             return;
         }
 
-        // fix jump
-        if (player.onGround()) {
-            jumpTick = 8;
-            setbackPos = lastOnGroundPos;
+        if (player.fabricPlayer.onGround()) {
+            jumpTick = 1;
+            setbackPos = player.lastOnGroundPos;
         }
 
-        // fix water
-        if (player.isInWater()) {
-            waterTick = 8;
-            setbackPos = lastInWaterPos;
+        // fix liquid
+        if (player.fabricPlayer.isInWater() || player.fabricPlayer.isInLava()) {
+            liquidTick = 8;
+            setbackPos = player.lastInLiquidPos;
         }
 
         // fix hurt
-        if (player.hurtTime > 0) {
+        if (player.fabricPlayer.hurtTime > 0) {
             jumpTick = 6;
-            setbackPos = currentPos;
+            setbackPos = player.currentPos;
         }
 
 
-        if (!player.onGround() && jumpTick > 0
-                && currentPos.y() - lastOnGroundPos.y() < 1.25219 * (1 + player.getJumpBoostPower()) + CONFIG().getThreshold()
-                && currentPos.distanceTo(lastPos) < player.getSpeed() + CONFIG().getThreshold()
+        if (!player.fabricPlayer.onGround() && jumpTick > 0
+                && player.currentPos.y() - player.lastOnGroundPos.y() < 1.25219 * (1 + player.fabricPlayer.getJumpBoostPower()) + CONFIG().getThreshold()
+                && player.currentPos.distanceTo(player.lastPos) < 5.612 * (1 + player.fabricPlayer.getSpeed()) + CONFIG().getThreshold()  // 警惕跳跃弱检测
         ) {
             jumpTick--;
-        } else if (!player.isInWater() && waterTick > 0
+        } else if ((!player.fabricPlayer.isInWater() || !player.fabricPlayer.isInLava()) && liquidTick > 0
 //                && (lastPos.y() - lastPos2.y() + CONFIG().getThreshold()) > (player.position().y() - lastPos.y())  // 警惕出水弱检测
         ) {
-            waterTick--;
-        } else if (lastPos2 != null && !player.onGround() && !player.isInWater()) {
+            liquidTick--;
+        } else if (player.posHistory.get(1) != null && !player.fabricPlayer.onGround() && (!player.fabricPlayer.isInWater() && !player.fabricPlayer.isInLava())) {
             jumpTick = 0;
-            waterTick = 0;
-            if (lastPos.y() - player.position().y() < CONFIG().getThreshold() &&
-                    lastPos2.y() - lastPos.y() <= CONFIG().getThreshold()) {
+            liquidTick = 0;
+            if (player.lastPos.y() - player.currentPos.y() < CONFIG().getThreshold() &&
+                    player.posHistory.get(1).y() - player.lastPos.y() <= CONFIG().getThreshold()) {
                 flag();
                 setback(setbackPos);
             }
@@ -68,5 +69,13 @@ public class FlightA extends Check {
     @Override
     public void _onTeleport() {
         disableTick = 6;
+    }
+
+    @Override
+    public void _onJump() {
+        // fix jump
+        if (player.fabricPlayer.onGround()) {
+            jumpTick = 8;
+        }
     }
 }

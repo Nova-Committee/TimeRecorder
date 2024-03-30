@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MixinCommand",
-    "MixinTeleport"
+    "MixinPacket"
   ],
   "injectors": {
     "defaultRequire": 1
