@@ -27,18 +27,18 @@ public abstract class Check {
 
     public final void flag() {
         violations++;
-        LogUtils.alert(player.playerData.getName(), checkName, String.format("VL: %s", violations));
+        LogUtils.alert(player.playerData.getName(), checkName, String.format("(VL:%s)", violations));
     }
 
     public final void flag(String extraMsg) {
         violations++;
-        LogUtils.alert(player.playerData.getName(), checkName, extraMsg);
+        LogUtils.alert(player.playerData.getName(), checkName, String.format("(VL:%s) %s", violations, extraMsg));
     }
 
     public final void setback(@NotNull Vec3 position) {
         if (!CONFIG().isAllowSetback()) return;
         player.hasSetback = true;
-        player.needToDoNextTick.add(() -> player.needToDoNextTick.add(() -> player.hasSetback = false));
+        player.timeTask.addTask(() -> player.hasSetback = false, 1);
         player.fabricPlayer.moveTo(position);
         player.fabricPlayer.teleportTo(position.x(), position.y(), position.z());
         player.fabricPlayer.connection.resetPosition();
@@ -48,10 +48,14 @@ public abstract class Check {
         if (!CONFIG().isAllowSetback()) return;
         ci.cancel();
         player.fabricPlayer.connection.resetPosition();
+        badPacket();
+    }
+
+    public final void badPacket() {
         if (setbackFoodLevel == null)
             setbackFoodLevel = player.fabricPlayer.getFoodData().getFoodLevel();
         player.fabricPlayer.getFoodData().setFoodLevel(0);
-        player.needToDoNextTick.add(() -> {
+        player.timeTask.addTask(() -> {
             player.fabricPlayer.getFoodData().setFoodLevel(setbackFoodLevel);
             setbackFoodLevel = null;
         });

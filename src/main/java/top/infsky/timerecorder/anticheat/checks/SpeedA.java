@@ -17,7 +17,7 @@ public class SpeedA extends Check {
 
     @Override
     public void _onTick() {
-        if (hasJumped && !player.lastOnGround && player.fabricPlayer.onGround()) {
+        if (hasJumped && !player.jumping) {
             hasJumped = false;
             jumpTick = 10;
             return;

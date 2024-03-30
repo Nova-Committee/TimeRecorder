@@ -36,11 +36,6 @@ public abstract class MixinPacket {
             val trPlayer = Objects.requireNonNull(Utils.getPlayer(this.getPlayer().getUUID())).antiCheat;
 
             trPlayer.manager.onPacketReceive(packet, ci);
-            if (getPlayer().onGround() && !packet.isOnGround()
-//                    && packet.getY(getPlayer().getY()) - getPlayer().getY() > 0
-            ) {
-                trPlayer.manager.onJump();
-            }
         } catch (NullPointerException ignored) {}
     }
 

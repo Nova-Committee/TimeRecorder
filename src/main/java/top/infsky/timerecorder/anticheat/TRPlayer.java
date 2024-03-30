@@ -1,13 +1,13 @@
 package top.infsky.timerecorder.anticheat;
 
 import lombok.Getter;
-import lombok.val;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 import top.infsky.timerecorder.Utils;
+import top.infsky.timerecorder.anticheat.utils.TimeTaskManager;
 import top.infsky.timerecorder.config.AntiCheatConfig;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.PlayerData;
@@ -33,8 +33,9 @@ public class TRPlayer {
     public Vec3 lastInLiquidPos;
     public boolean lastOnGround;
     public boolean hasSetback = false;
+    public boolean jumping = false;
 
-    public List<Runnable> needToDoNextTick = new LinkedList<>();
+    public TimeTaskManager timeTask = new TimeTaskManager();
 
     public TRPlayer(@NotNull PlayerData playerData) {
         this.fabricPlayer = (ServerPlayer) playerData.player;
@@ -56,18 +57,14 @@ public class TRPlayer {
         updatePoses();
         if (fabricPlayer.onGround()) {
             lastOnGroundPos = currentPos;
+            jumping = false;
         }
         if (fabricPlayer.isInWater() || fabricPlayer.isInLava()) {
             lastInLiquidPos = currentPos;
         }
+        timeTask.onTick();
 
-        val preTask = needToDoNextTick;
-        for (Runnable task : preTask) {
-            task.run();
-            needToDoNextTick.remove(task);
-        }
         manager.update();
-
 
         lastPos = currentPos;
         lastOnGround = fabricPlayer.onGround();

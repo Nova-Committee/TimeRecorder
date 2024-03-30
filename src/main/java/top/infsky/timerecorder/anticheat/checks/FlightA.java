@@ -29,7 +29,7 @@ public class FlightA extends Check {
         }
 
         if (player.fabricPlayer.onGround()) {
-            jumpTick = 1;
+            jumpTick = 1;  // MC原版OnGround不可靠。方块边缘会误判。
             setbackPos = player.lastOnGroundPos;
         }
 
@@ -47,8 +47,8 @@ public class FlightA extends Check {
 
 
         if (!player.fabricPlayer.onGround() && jumpTick > 0
-                && player.currentPos.y() - player.lastOnGroundPos.y() < 1.25219 * (1 + player.fabricPlayer.getJumpBoostPower()) + CONFIG().getThreshold()
-                && player.currentPos.distanceTo(player.lastPos) < 5.612 * (1 + player.fabricPlayer.getSpeed()) + CONFIG().getThreshold()  // 警惕跳跃弱检测
+//                && player.currentPos.y() - player.lastOnGroundPos.y() < 1.25219 * (1 + player.fabricPlayer.getJumpBoostPower()) + CONFIG().getThreshold()
+//                && player.currentPos.distanceTo(player.lastPos) < 5.612 * (1 + player.fabricPlayer.getSpeed()) + CONFIG().getThreshold()  // 警惕跳跃弱检测
         ) {
             jumpTick--;
         } else if ((!player.fabricPlayer.isInWater() || !player.fabricPlayer.isInLava()) && liquidTick > 0
@@ -68,7 +68,7 @@ public class FlightA extends Check {
 
     @Override
     public void _onTeleport() {
-        disableTick = 6;
+        disableTick = 2;
     }
 
     @Override
