@@ -1,10 +1,9 @@
 package top.infsky.timerecorder.anticheat.checks;
 
-import lombok.val;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import top.infsky.timerecorder.anticheat.Check;
 import top.infsky.timerecorder.anticheat.TRPlayer;
+import top.infsky.timerecorder.anticheat.utils.PlayerMove;
 
 import static top.infsky.timerecorder.anticheat.TRPlayer.CONFIG;
 
@@ -28,21 +27,20 @@ public class SpeedA extends Check {
         // check if player is on ground (not in liquid or in water)
         if (player.lastPos == null || player.hasSetback || !player.fabricPlayer.onGround() || !player.lastOnGround || player.fabricPlayer.isInWater()) return;
 
-        val curPrefixPos = new Vec3(player.currentPos.x, 0, player.currentPos.z);
-        val lastPrefixPos = new Vec3(player.lastPos.x, 0, player.lastPos.z);
-        double maxTickSpeed;
+        double maxSecSpeed;
         if (jumpTick > 0)
-            maxTickSpeed = 0.37;
+            maxSecSpeed = 7.4;
         else if (player.fabricPlayer.isSprinting())
-            maxTickSpeed = 0.2806;
+            maxSecSpeed = 5.612;
         else if (player.fabricPlayer.isSilent())
-            maxTickSpeed = 0.06475;
+            maxSecSpeed = 1.295;
         else  // walking
-            maxTickSpeed = 0.21585;
+            maxSecSpeed = 4.317;
 
-        if (curPrefixPos.distanceTo(lastPrefixPos) > (maxTickSpeed * (1 + player.fabricPlayer.getSpeed()) + CONFIG().getThreshold())) {
-            flag(String.valueOf(curPrefixPos.distanceTo(lastPrefixPos) * 20));
-            setback(player.lastPos);
+        final double speed = PlayerMove.getXzSecSpeed(player.lastPos, player.currentPos);
+        if (speed > (maxSecSpeed * (1 + player.fabricPlayer.getSpeed()) + CONFIG().getThreshold())) {
+            flag(String.valueOf(speed));
+//            setback(player.lastPos);
         }
     }
 

@@ -29,7 +29,8 @@ public class CheckManager {
                 new AirPlaceA(player),
                 new SpeedA(player),
                 new SpeedB(player),
-                new HighJumpA(player)
+                new HighJumpA(player),
+                new NoSlowA(player)
         ), player);
         checkManager.onTeleport();
         return checkManager;

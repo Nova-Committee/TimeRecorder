@@ -31,9 +31,11 @@ public class TRPlayer {
     @Range(from = 0, to = 19) public List<Vec3> posHistory;
     public Vec3 lastOnGroundPos;
     public Vec3 lastInLiquidPos;
+    public Vec3 lastOnLiquidGroundPos;
     public boolean lastOnGround;
     public boolean hasSetback = false;
     public boolean jumping = false;
+    public boolean lastUsingItem = false;
 
     public TimeTaskManager timeTask = new TimeTaskManager();
 
@@ -58,6 +60,8 @@ public class TRPlayer {
         if (fabricPlayer.onGround()) {
             lastOnGroundPos = currentPos;
             jumping = false;
+            if (fabricPlayer.isInWater())
+                lastOnLiquidGroundPos = currentPos;
         }
         if (fabricPlayer.isInWater() || fabricPlayer.isInLava()) {
             lastInLiquidPos = currentPos;
@@ -68,6 +72,7 @@ public class TRPlayer {
 
         lastPos = currentPos;
         lastOnGround = fabricPlayer.onGround();
+        lastUsingItem = fabricPlayer.isUsingItem();
     }
 
     private void updatePoses() {
