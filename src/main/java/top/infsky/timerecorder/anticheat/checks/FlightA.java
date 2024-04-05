@@ -52,6 +52,7 @@ public class FlightA extends Check {
         ) {
             jumpTick--;
         } else if ((!player.fabricPlayer.isInWater() || !player.fabricPlayer.isInLava()) && liquidTick > 0
+                && player.currentPos.y() - player.lastInLiquidPos.y() < 0.5 + CONFIG().getThreshold()  // 瞎写的
 //                && (lastPos.y() - lastPos2.y() + CONFIG().getThreshold()) > (player.position().y() - lastPos.y())  // 警惕出水弱检测
         ) {
             liquidTick--;

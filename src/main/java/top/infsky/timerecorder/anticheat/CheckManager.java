@@ -30,7 +30,8 @@ public class CheckManager {
                 new SpeedA(player),
                 new SpeedB(player),
                 new HighJumpA(player),
-                new NoSlowA(player)
+                new NoSlowA(player),
+                new ScaffoldA(player)
         ), player);
         checkManager.onTeleport();
         return checkManager;

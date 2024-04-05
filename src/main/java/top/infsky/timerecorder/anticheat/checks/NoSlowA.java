@@ -34,10 +34,10 @@ public class NoSlowA extends Check {
 
         final double secSpeed = PlayerMove.getXzSecSpeed(player.lastPos, player.currentPos);
 
-        if (secSpeed > SLOW_SPEED.get(itemUseTick) * (1 + player.fabricPlayer.getSpeed()) + CONFIG().getThreshold()) {
+        if (secSpeed > SLOW_SPEED.get(itemUseTick) * player.speedMul + CONFIG().getThreshold()) {
             flag();
             setback(player.lastPos);
-            player.fabricPlayer.stopUsingItem();
+            if (CONFIG().isAllowSetback()) player.fabricPlayer.stopUsingItem();
             badPacket();
         }
         if (itemUseTick < SLOW_SPEED.size() - 1) itemUseTick++;

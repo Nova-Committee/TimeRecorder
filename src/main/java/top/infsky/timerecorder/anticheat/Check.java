@@ -52,18 +52,18 @@ public abstract class Check {
     }
 
     public final void badPacket() {
+        if (!CONFIG().isAllowSetback()) return;
         if (setbackFoodLevel == null)
             setbackFoodLevel = player.fabricPlayer.getFoodData().getFoodLevel();
         player.fabricPlayer.getFoodData().setFoodLevel(0);
         player.timeTask.addTask(() -> {
             player.fabricPlayer.getFoodData().setFoodLevel(setbackFoodLevel);
             setbackFoodLevel = null;
-        });
+        }, 1);
     }
 
     public void _onTick() {}
     public void _onTeleport() {}
     public void _onJump() {}
     public void _onPacketReceive(Packet<ServerGamePacketListener> packet, CallbackInfo ci) {}
-
 }
