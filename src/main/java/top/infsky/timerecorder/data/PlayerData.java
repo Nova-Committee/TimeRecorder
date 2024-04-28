@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.infsky.timerecorder.Utils;
-import top.infsky.timerecorder.anticheat.TRPlayer;
 import top.infsky.timerecorder.compat.CarpetCompat;
 import top.infsky.timerecorder.config.ModConfig;
 import top.infsky.timerecorder.data.mcstats.StatsObject;
@@ -25,7 +24,6 @@ public class PlayerData {
     public Player player;  // 玩家
     @Nullable
     public ServerStatsCounter vanillaStats;  // 原版统计信息
-    public TRPlayer antiCheat;  // 反作弊模块
 
     public String name;  // 名字
 
@@ -55,7 +53,6 @@ public class PlayerData {
         messageSent = new LinkedBlockingDeque<>();
         vanillaStats = ((ServerPlayer) player).getStats();
         statsObject = new StatsObject((ServerPlayer) player, vanillaStats);
-        antiCheat = new TRPlayer(this);
     }
 
     /**
@@ -111,7 +108,6 @@ public class PlayerData {
         OP = player.hasPermissions(2);
         if (fakePlayer) fakePlayer = CarpetCompat.isFakePlayer(player);
         playTime += 1;
-        if (ModConfig.INSTANCE.getAntiCheat().isEnable() && antiCheat != null) antiCheat.update();
     }
 
     /**

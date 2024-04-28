@@ -26,8 +26,6 @@ public class ModConfig extends AutoReloadToml {
     private CommonConfig common = new CommonConfig();
     @TableField(value = "addon", topComment = "扩展")
     private AddonConfig addon = new AddonConfig();
-    @TableField(value = "anticheat", topComment = "反作弊(实验性)")
-    private AntiCheatConfig antiCheat = new AntiCheatConfig();
 
 
     public ModConfig() {

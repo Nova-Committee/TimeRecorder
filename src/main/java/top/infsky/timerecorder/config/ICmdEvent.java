@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
-import top.infsky.timerecorder.anticheat.command.*;
 import top.infsky.timerecorder.command.*;
 
 import static net.minecraft.commands.Commands.*;
@@ -41,14 +40,6 @@ public class ICmdEvent {
                         .then(literal("confirm")  // 确认撤回（由/tr recall触发）
                                 .then(argument("message_id", IntegerArgumentType.integer())
                                         .executes(RecallCommand.Confirm::execute))))
-        );
-
-        // TimeRecorder Anti-Cheat 模块
-        dispatcher.register(literal("trac")  // 没参数默认显示帮助信息
-                .executes(top.infsky.timerecorder.anticheat.command.HelpCommand::execute)
-                .then(literal("alert")  // 显示警报
-                        .requires(source -> source.hasPermission(2))
-                        .executes(AlertCommand::execute))
         );
     }
 }
