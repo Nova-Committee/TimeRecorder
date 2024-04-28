@@ -3,9 +3,7 @@
   "package": "top.infsky.timerecorder.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "MixinCommand",
-    "MixinPacket",
-    "MixinPlayer"
+    "MixinCommand"
   ],
   "injectors": {
     "defaultRequire": 1
